@@ -1,0 +1,158 @@
+Q. Difference bitween RHEL 6 & 7?
+A. In RHEL6 maximum file system size=16TB (for 64bit Machine) and 8TB (for 32 bit machine). 
+   While in RHEL7 maximum file system size is 500TB.
+   #Refer Excel?
+   In RHEL6 maximum file system size=16TB (for 64bit Machine) and 8TB (for 32 bit machine). While in RHEL7 maximum file system 
+   size is 500TB. Also keep in mind that RHEL does not support XFS on 32-bit machines.
+   
+   RHEL 6 – Iptables by default service port is enabled when service is switched on. 
+   RHEL 7 – Firewalld instead of iptables. Iptables can also support with RHEL 7, but we can't use both of them at the same 
+   time. Firewall will not allow any port until and unless you enabled it.
+--------------------------------------------------------------------------------------------------   
+Q. Difference bitween yum& RPM
+A. yum: can install the packages available in its repository 
+   RPM: can install multiple packages with the right file name
+   ----------RPM-----------
+RPM to install
+# rpm -ivh <package name>
+To check installed package under packages of mounted DVD(df -h)
+# rpm -qa | grep <package name> 
+To uninstall the package 
+# rpm -ev <package name>
+-----------yum----------
+#yum -y install tree
+#rpm -qa | grep tree ( to list the package is installedor not)
+------------------------------------------------------------------------------------------
+Q. Difference between Hard link and Soft link
+A. Hard Link :
+A hard link acts as a copy (mirrored) of the selected file. It accesses the data available in the original file.
+  If the earlier selected file is deleted, the hard link to the file will still contain the 
+  data of that file.
+
+ Soft Link :
+  A soft link (also known as Symbolic link) acts as a pointer or a reference to the file 
+  name. It does not access the data available in the original file. If the earlier file is 
+  deleted, the soft link will be pointing to a file that does not exist anymore.
+-------------------------------------------------------------------------------------------
+Q. Difference between TCP/UDP?
+A. TCP is a connection-oriented protocol, whereas UDP is a connectionless protocol. 
+   A key difference between TCP and UDP is speed, as TCP is comparatively slower than UDP. 
+   Overall, UDP is a much faster, simpler, and efficient protocol, however, 
+   retransmission of lost data packets is only possible with TCP
+-------------------------------------------------------------------------------------------
+Q. Difference bitween find and locate?
+A. Find:
+   The find utility is a bit more aggressive than locate and which. The find utility will 
+   return all the results that contain the keyword or string we have specified. 
+   So when you search for a file with find command, it will return all files and 
+   directories that contain the word.
+Q. Locate:
+   This utility performs a search through a previously created database of files and 
+   directories available on our system. It matches all entries that contain a specified 
+   character string. So before we can use the “locate” command we must first execute 
+   the updatedb command to build a local database for each file within our filesystems 
+   on Linux. This process usually takes a few seconds to complete.
+-------------------------------------------------------------------------------------------
+Q. Difference bitween FTP(21),SFTP(22) NFS(2049), and SAMBA()?
+   /etc/ssl/ftpc/ftpc. conf
+   /etc/exports
+   /etc/samba/smb.conf
+A. Ftp: 
+   stands for File Transfer Protocol which is used for transferring files from one 
+   location to another location, normally using Internet. With FTP you can send very 
+   big files. 
+   SFTP(22):
+   SFTP (or Secure File Transfer Protocol) is an alternative to FTP that also allows you to transfer 
+   files, but adds a layer of security to the process. SFTP uses SSH (or secure shell) encryption to 
+   protect data as it’s being transferred. This means data is not exposed to outside entities on the 
+   Internet when it is sent to another party.
+   NFS: (File level storage)
+   stands for Network File system which allows a user to access a 
+   file usually in a server. NFS is a file-sharing protocol that enables the users to access their clients' 
+   files through a network, 
+   File level storage, or file storage, is storage used for unstructured data and is commonly deployed 
+   in Network Attached Storage (NAS) systems. It uses Network File System (NFS) for Linux, and 
+   Common Internet File System (CIFS) or Server Message Block (SMB) protocols for Windows.
+   Samba:
+   is a software that enables not only sharing 
+   of files but also sharing of printers.
+   (i) Samba supports to all O/S platforms, whereas NFS will support the same platforms only.
+   (ii) There is a security in Samba because Samba requires authentication, whereas in 
+        NFS there is no security if there is no kerberos because NFS does not requires 
+		authentication.
+   (iii)Samba will support printer sharing, whereas NFS will not support printer sharing.
+----------------------------------------------------------------------------------------------------------
+Q. where do we use block storage or file storage?
+A. Block storage is popular as a networking architecture used by enterprises for business-critical 
+   applications, while file storage is ideal for data sharing within small teams
+----------------------------------------------------------------------------------------------------------
+Q. Diference bitween layer 2 and layer 3 switches?
+A.Layer 2 Switch:(data link layer)
+   -Works with MAC address only 
+   -it can communicate with single private network
+   -Unmanaged switches
+   -most famelier with Ethernet, means devices in a ethernet network are identified by MAC
+  Layer 3 Switch(network layer)
+   -Can perform functioning of both 2 layer and 3 layer switch
+   -it can communicate with different private networks by configuring VLAN.
+   -it is network layer and protocall is internet protocol
+   -Layer 3 switches are managing routing table
+-------------------------------------------------------------------------------------------
+Q. can we replace layer 3 switch as a router?
+A. it is not recommended to replace a router with layer 3 switch, but you can apply them in the same network at the same 
+   time.
+   A layer 3 switch is both a switch and a router: it can be regarded as a router 
+   with multiple Ethernet ports and with switching function. layer 3 switch 
+   enable packets switching by inspecting both their IP addresses and their MAC addresses.
+----------------------------------------------------------------------------------------------------------
+Q. Difference bitweentn SMTP and SNMP?
+A. SNMP and SMTP are two standards that work together in harmony to achieve two 
+   different tasks. They work in such a way that one can control SMTP servers and MTAs 
+   through SNMP Managers. Further, SNMP Managers are capable of sending alerts through 
+   SMTP mail servers.
+-------------------------------------------------------------------------------------------
+Q. Difference botween telnet and ssh?
+A. Telnet transfers the data in simple plain text. On other hand SSH uses Encrypted 
+   format to send data and also uses a secure channel. No authentication or privileges 
+   are provided for user's authentication. As SSH is more secure so it uses public key 
+   encryption for authentication
+-------------------------------------------------------------------------------------------
+Q. What are the differences between MAC and IP addresses?
+A. MAC:
+   * It is a permanent address. So we cannot change this address
+   * It stands for Media Access Control Address. 
+   * It is a physical address
+   IP Address:
+   * It is a temporary address. So, we can change this address any no. of times.
+   * nternet Protocol address.
+   * It is a logical address
+ -------------------------------------------------------------------------------------------
+Q.  What is the difference between incremental and differential backup?
+A.  Incremental backup :
+    Taking a backup from the last full backup or last incremental backup
+    Differential backup :
+    Taking a backup from last full backup or last cumulative or differential backup
+--------------------------------------------------------------------------------------------------
+Q. What is the basic difference between private disk group and shared disk group?
+A. Private disk group :
+    The disk group is only visible for the host on which we have created it. If the host is a part of the cluster, the 
+    private disk group will not be visible to the other cluster nodes.
+   Shared disk group :
+    The disk group is sharable and visible to the other cluster nodes.  
+
+ntp/crony
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

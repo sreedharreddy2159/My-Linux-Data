@@ -1,0 +1,131 @@
+------------------------------File pemissions--------------------------------------------- 
+3 types of file permissions also to the directory 
+r-4--> read permission
+w-2--> Write permission
+x-1--> Execute permission
+3 exe+write
+5 read+exe
+6 read+write
+7 read+write +exe
+File/dir architecture
+# drwxr-xr-x:2:root: root: others:4096: date: dir1
+  usr-g-other: owner:group
+Syntax
+# chmod 777 file1
+for no permissions
+# chmod 000 file               
+# chown user:user dir/file
+to change the permissions of owner and group
+# chgrp user dir/file
+to change the permissions of group
+# chown -R user:user <dir>
+ -v for output will give
+--------------------------------------------------------------------------------------------------------
+-----------------------------------------umask---------------------------------------------------------
+Q. What are the default permissions to the file and directory
+A. To the dir 777 and to file 666
+with umask  
+root(0022) dir-755, file-644
+user(0002) dir-775, flle-664
+# Configuration file /etc/bashrc
+if statement .....
+1 st value represents special permissions
+steps
+a. umask value 002
+b. binary equivalent of (a)= 000 000 010
+c. 1's compliment of step number (b) = 111 111 101
+d. system defined permissions for a file is = 666
+e. system defined permissions for a directory is = 777
+f. binary equivalent of (d) is = 110 110 110
+g. binary equivalent of (e) is = 111 111 111
+h. default file permission = step no (f) and (c)
+i. default dir. permission = step no (g) and (c)
+
+file 
+f. 110 110 110
+c. 111 111 101
+result
+   110 110 100
+   6   6   4
+dir
+g. 111 111 111
+c. 111 111 101
+result
+   111 111 101
+   7   7   5
+Ex:- for umask value 123
+then file permission is
+rw- rw- rw-
+--x -w- -wx
+rw- r-- r--
+-----------------------------------specialfiles permission--------------------------------------------
+umask value:-0002/0022
+last 3 values defines umask values
+1. SUID (set user id)--> u --> 4 
+2. SGID (set grp  id)--> g --> 2
+3.STICKYBIT    --------> o --> 1
+
+1. SUID (set user id)--> u --> 4
+To give access to run /sbin command by normal user. root user can apply SUID on that particular command
+Ex:- create a user by login to any existing user 
+where the permission will be denied
+# which useradd (will show the path of the command)
+/usr/sbin/useradd
+# ls -l /usr/sbin/useradd
+# chmod u+s /usr/sbin/useradd
+or # chmod 4755 /usr/sbin/useradd
+To remove
+#chmod u-s or 0755 /usr/sbin/useradd
+
+2. 2. SGID (set grp  id)--> g --> 2
+To get group ownership automatically on a perticular directory need to apply SGID
+Ex:- Lets create 2 users and 1 group and add both users in to that group
+# mkdir /hyd
+# ls -ld /hyd
+# chgrp group /hyd
+# chmod g+s or 2775 /hyd
+# chmod g-s or 0775 /hyd
+
+3.STICKYBIT    --------> o --> 1(o+t)
+To prevent to modify/delete files and dir from the user then we give full permission on a particular dir
+Ex:- mkdir -m 1777 /ampt ot mkdir /amtp
+# chmod 777 /ampt 
+# cd /ampt 
+# touch abcd{12..9}
+# chmod o+t /ampt 
+-------------------------------------------------------------------------------------------------------
+----------------------------------------Acls-----------------------------------------------------------
+# setfacl - set file access control list
+Syntax:- 
+# getfacl file/dir
+# setfacl -m u:username:rwx file/dir
+# setfacl -m g:groupnam:rwx file/dir
+To remove all acls applied on file/dir
+# setfacl -b  file/dir
+To remove acls to applied user 
+# setfacl -x u:user file/dir
+# setfacl -x g:group file/dir
+
+-m --> modify
+-u --> user 
+-g --> except/remove
+-b --> base/remove
+
+------------------------chattr command (protecting file)------------------------------------------
+Protect files & directories from accidental deletion
+Change the attributes of files and directories
+
+syntax
+need to check the permissions before applying if not need to set pemissions to append
+#chattr +a <dir/file> 
+#chattr -R -a <dir/file>
++a append the file only                
+-a remove the only append permissions
+-R applies to directory and inside the directory
+list the attributes applied or not 
+#lsattr -d dir/file    
+------------------------------------------------------------------------------------------
+ 
+
+
+  

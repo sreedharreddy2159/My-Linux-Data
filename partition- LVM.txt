@@ -1,0 +1,449 @@
+Q. Command used to scan the newly inserted hard disk
+A. just need to rescan the luns by passing the command
+   echo command to scan disk in linux
+# echo "---" > /sys/class/scsi_host/host0/scan
+first - specify lun id'scan
+      - disk number
+	  - storage path will be define
+# fdisk -l (to list partition related disk)
+-------------------------------------------------------------------------------------------
+Q. Ho to convert ext3 to ext4.
+A. first need to unmount the hard disk
+# unmount /dev/sda5
+# tune2fs -O extent, uninit_bg,dir_inde /dev/sda5
+# fsck -pf /dev/sda5
+# e2fsck -f /dev/sda5
+mount -t ext4 /dev/sda5
+#df -Th
+-----------------------------------------Disk space increase-----------------------------------------------------------------
+# df -h
+# df -Th /
+# lsblk
+# vgs
+# fdisk -l 
+# pvcreate /dev/sdb
+# pvs 
+# vgs 
+# vgextend vgnane pvname
+# lvextend -l +100%free lv_name
+# xfs_grows lvname 
+# df -Th
+
+----------------------------------------- LVM ------------------------------------------------------------
+Q. What is LVM?
+A. Logical Volume Management enables the combining of multiple individual hard drives
+   and/or disk partitions into a single volume group (VG). That volume group can then 
+   be subdivided into logical volumes (LV) or used as a single large logical volume where 
+   we can increase or shrink the Logicle volume
+ #lvcreate -L +<size in MBs> -n <logical volume name><Volume group name> or
+ # lvcreate -l <no. of PEs> -n <logical volume name><volume group name>
+Physical Extent (PE) :
+It is chunk of disk space. Every physical volume divided into a number of equal sized PEs
+-l --extents [+]LogicalExtentsNumber[%{VG|LV|PVS|FREE|ORIGIN}]
+-L --size [+]LogicalVolume Size[bBsSkKmMgGtTpPeE]
+
+---------------------------------df Command-----------------------------------------------
+Q. Disk File System Usage Report
+# df <option <mount point>
+# df -Th or df -H
+-h --> size of the value is divided by 1024
+-H --> size of the value is divided by 1000
+-l --> display the local file systems
+-T --> display the type of file systems
+# df -t xfs -h (will display the xfs file system)
+# df -x xfs -h (will display the type of file system excluding xfs filesystem)
+-----------------------------------------------------------------------------------------
+-----------------------------------du Command----------------------------------------------------
+Check file size in Linux
+disk utilistion can be known
+syntax
+# du -options <path>
+# du -h /temp*
+-h --> size of the value is divided by 1024
+-H --> size of the value is divided by 1000
+-k will display size on kB
+--inodes (howmany inodes is been used)
+# du -sh <path>
+------------------------------------------------------------------------------------------
+-----------------------------------fdisk Command-------------------------------------------
+Fixed Disk | Format Disk - Manage Disks & Partitions 
+# fdisk -l )will list al the disk inflrmation)
+# fdisk -l <harddisk name>
+n new partition
+p printing
+wq write and quit
+d for deletion of partition 
+# partprobe </dev/sde
+# fdisk -l /dev/sde
+# mkfs.ext4 /dev/sde1
+-------------------------------------------------------------------------------------------
+------------------------------free command(menory usage/RAM)-------------------------------
+To check the system memory usage
+# free -k (will display the memory in KB)
+ -m will show in mb
+ -g will show in GB
+# free -h (will be shown in human readable format)
+# free -lh (to show low and high values)
+# free -th (to view the total memory utilization including memory and swap)
+-------------------------------------------------------------------------------------------
+-------------------------------Partition-disk and file system management --------------------------------
+To check how many disks are connected to the RHEL server 
+# lsblk or fdisk -l
+lets add new hard disk by powring off # poweroff (settings>storage>click Controller SATA click on 2nd plus icon 
+click on create> hard disk file type VDI, next dynamically allocated , HD  file name hdd 1, size 8 GB create)
+now select hdd 1 and click on choose 
+Repete the same steps to add 4 more HD with name hdd 2, hdd 3, hdd 4 and hdd 5 
+click on Ok and then start button to power it on the server 
+now let us check OS has ditected HD which was newly created or not 
+# fdisk -l
+now lets create a partition on the secont HD
+primary partition 
+1. /dev/sdb1 [usable]
+2. /dev/sdb2 [usable]
+3. /dev/sdb3 [usable]
+4. /dev/sdb4 [extended partition] not usable
+5. /dev/sdb5 [logical partition] [usable]
+6. /dev/sdb6 [logical partition] [usable]
+7. /dev/sdb7 [logical partition] [usable]
+Now
+# fdisk /dev/sdb
+n 
+p 
+1
+
++1G
+p (will display the partition )
+(now repeat this till 3 rd partition)
+now create extended partition
+n 
+e 
+enter
+enter
+
+p (will display the partition )
+now create logical partition as fallows 5, 6, 7
+n 
+ 
+enter
++1G
+
+p (will display the partition )
+Now save the changes
+W (save/alterd)
+now to list the bloks
+# lsblk
+now create a file system ontop if it with sdb1
+# mkfs.xfs /dev/sdb1
+now mount 
+# mkdir /mpt1
+mount /dev/sdb1 /mpt1
+lets verify 
+# df -h
+for permanent mount need to do the entries in /etc/fstab
+# unmount /mpt1
+so next get the block id 
+# blkid /dev/sdb1
+copy UUID
+#vi /etc/fstab
+go to the last line by pressing G next open a new line by pressing  small "o"
+then past UUID and remove the double coutes then tab give mount point and again tab mention filesystem type tab mounting option as falows below line tab 0 as dump utility  give a space do we want file system to be check every time system bootrs give 2 if not required give 0
+
+UUID+*** /mpt1 xfs default 0 0 
+:wq!
+# mount /mpt1
+#df -h
+---To unmount--
+# unmount /mpt1
+and delete the entries in /etc/fstab
+-------if we wanr to check and repair xfs file system first unmount it 
+# xfs_repair /dev/sdb1
+to check this command is executed successfully
+# echo $?
+----------------------------------------------------------------------------------------------------------
+---------------------------------------LVM[Logical volume management]------------------------------------
+LVM.
+Logical Volume Management enables the combining of multiple individual hard drives
+ and/or disk partitions into a single volume group (VG). That volume group can then 
+ be subdivided into logical volumes (LV) or used as a single large logical volume where 
+ we can increase or shrink the Logicle volume 
+ Lets take 3 HD 
+/dev/sdb 8GB
+/dev/sdc 8GB
+/dev/sdd 8GB
+with this we will create 3 PV 
+Whatis the advantage of LVM over standerd partition  
+Standerd partition is to take back up and need to unmount, delete the partition and then need to create 
+partition after filesystem and then need to mount
+LVM just by using extent command and resizing the filesystem we can make this easy while the file system is mounted
+But to reduce the Logical volume we need to unmount the file system 
+Also we can impliment RAID(Redundent ARRAY INDIPENDENT DISK)in LVM 
+RAID:
+1. Improvd READ/WRITE performace 
+2. Fault Toleance (we can replace the new HD if HD fails and then the data can be built with remaining PV Raid group
+
+Techniques:
+1. Striping
+2. Mirroring
+3. Striping with parity 
+
+RAID Levels:
+1. RAID 0 => block level striping
+2. RAID 1 => Mirroring
+3. RAID 2 => Not used
+4. RAID 3 => Not used
+5. RAID 4 => not used
+6. RAID 5 => Block level striping with Distributed parity 
+7. RAID 6 => Block level striping with Dual Distributed parity
+8. nested/Hybride levels (Cobination of 2 raid levels)
+
+Now log in to server and lets create LVM
+first create PV
+# pvcreate /dev/sdb /dev/sdc /dev/sdd /dev/sde /dev/sdf
+# pvs or pv display
+# vgcreate myvg /dev/sdb /dev/sdc /dev/sdd /dev/sde 
+# vgdisplay myvg 
+now create LV and by default linear LV is created 
+it means suppose we have 3 HD and in case of linear the data will be stored in 1st disk a,b,c,d next to 2nd disk
+But in case of RAID will be stored as striped HD1(A), HD2(B) etc.
+# lvcreate -L 3G myvg -n mylv1 
+# lvdisplay -m
+# mkfs.ext4 /dev/myvg/mylv1
+# mkdir /mpt2
+# mount /dev/myvg/mylv1 /mpt2
+To increase the LV
+# lvextend -r -L +7G /dev/myvg/mylv1
+-r is for resize the file system 
+Now how to reduce a logical volume 
+befor redusing need to unmount 
+# unmount /mpt2
+# e2fsck -f /dev/myvg/mylv1 (to run filesystem check 
+# resize2fs /dev/myvg/mylv1 5G 
+Now we can reduce the logical volume
+# lv reduce -L 5G /dev/myvg/mylv1
+# mount /dev/myvg/mylv1 /apt2
+#df -h
+
+Now lets create one more LV 
+# lvcreate -L 5G myvg -n mylv2   
+# lvdisplay 
+# mkfs.xfs /dev/myvg/mylv2 
+# mkdir /apt3
+# mount /dev/myvg/mylv2 /mpt3
+# df -h
+To extent 
+# lvextent -L +7G /dev/myvg/mylv2 
+ -L: Extend or set the logical volume size in units of megabytes. A size suffix of M for megabytes, G for 
+     gigabytes,T for terabytes, P for petabytes or E for exabytes is optional.With the + sign the value is 
+	 added to the actual size of the logical volume and without it, the value is taken as an absolute one
+ -l: Extend or set the logical volume size in units of logical extents. With the '+' sign the value is 
+    added to the actual size of the logical volume and without it, the value is taken as an absolute one. 
+	The number can also be expressed as a percentage of the total space in the Volume Group with the 
+	suffix %VG, relative to the existing size of the Logical Volume with the suffix %LV, of the remaining 
+	free space for the specified PhysicalVolume(s) with the suffix %PVS, as a percentage of the remaining 
+	free space in the Volume Group with the suffix %FREE, or (for a snapshot) as a percentage of the 
+	total space in Origin Logical Volume with the suffix %ORIGIN. The resulting value is rounded upward
+As resize2fs for ext extention and for .xfs extention will be xfs_growfs 
+# xfs_growfs /dev/myvg/mylv2
+# df -h
+Note: xfs file system canot shrinkas there is no command
+-----------------create raid level 0 LV and default linear----------------------
+Now we are going to create raid 0(block level striping) LV
+before createing raid 0 let us extend the volume 
+# vgextend myvg /dev/sdf
+# vgdisplay or vgs
+let us first delete the 2 LV
+# umount /mpt1
+# unmount /mpt2
+# lvremove /dev/myvg/mylv1
+# lvremove /dev/myvg/mylv2
+# vgs 
+-------raid 0---------
+Now we are going to create raid 0 LV
+# lvcreate -i 5 -I 64K -n mylv3 -L 35G myvg    
+ -i means stripe(5 PV that we have created) 
+ -I each stripe size (64K) 
+ -n name of the VG 
+# lvdisplay -n (scrole up)
+now lets delete
+# lvremove /dev/myvg/mylv3
+--------RAID 1---------
+2way mirror
+3 way mirror
+now we are going to create RAID 1 LV
+To create mirror LV 
+lvcrete 
+we can create either 2way mirror or 3 way mirror 
+difference is 2 way will have 1 PV have original and other will have copy of sam date
+in 3 way mirror 1 PV will have original will have original data and 2 pv,s have copy of same data 
+Lets create RAID 1- 2 way mirror
+# lvcreate -m 1 -n mylv5 -L 7G myvg
+ -m no of copies 
+# lvdisplay -m
+now we can see the raid 1- 2 way mirror
+and the space will be occupied 14 GB to check
+# vgdisplay myvg
+and to delete mylv5
+# lvremove /dev/myvg/mylv5
+
+To create RAID 1- 3 way mirrior
+# lvcreate -m 2 -n mylv6 -L 7G myvg
+To verify 
+# lvdisplay -m 
+# vg display myvg (to know the 21 GB space is occupied)
+and to delete mylv5
+# lvremove mylv6
+--------RAID 5-----------
+now we are going to create RAID 5 LV 
+RAID 5 - Block level Stripeng with Distributed Parity
+RAID 5 - Requires 1 Implicit Parity Drive
+For RAID 5  minimum number of stripes is = 3 
+For RAID 5 minimum number of PV = 4(3+1)
+Now lets create 
+# lvcreate --type raid5 -i 4 -I 64 -n mylv7 -L 28G myvg  
+ -i is number of stripes that data wiil be stored accross 4 PV
+ -I each stripe size (64K)
+ -L size of the volume group
+It means data will be occupied  28/4 =7, so it will 28+7=35 GB will be occupied
+Let us verify
+# lvdisplay -m 
+To check the data occupied(35 GB) 
+# vgdisplay myvg
+now to remove lv 
+# lvremove /dev/myvg/mylv7
+---------RAID 6----------
+To create raid 6 LV
+RAID 6 => Block level striping with dual distributed parity 
+RAID 6 required 2 implicit parity drive 
+RAID 6 Minimum number of stripes =3 
+RAID 6 minimum number of PV = 5
+now lets create LV
+# lvcreate --type raid6 -i 3 -I 64k -n mylv8 -L 21G myvg  
+# lvdisplay -m (scroll up to know the details)
+To find out how much space it has occupied 7*5=35 but the data will be stored 21GB 
+# vgdisplay myvg
+# lvremove /dev/myvg/mylv8
+to delete the vg
+# vgremove myvg
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

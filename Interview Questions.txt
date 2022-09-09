@@ -1,0 +1,226 @@
+ CMDB(service now)--> Configuration Management Database
+ SLA- Service level agreement.
+ priority levels which means based on the business impact will be defined
+ each level will have[medium, high, low]
+ prt4(p4)--> least like file system clean up, 
+             user password reset,user login fail issues
+ prt3(p3)--> same as p4 will have high medium, low where the L3 team will be involved
+ prt2 and P1--> are highly preference like very critical issues maximum  30 min to 1 hour 
+------------------------------------------------------------------------------------------
+----------------------------------ITIL------------------------------------------------------------
+Q. ITIL:-Information Technology Infrastructure Library
+    The Information Technology Infrastructure Library (ITIL) is a set of detailed practices for 
+    IT activities such as IT service management (ITSM) and IT asset management (ITAM) that focus 
+    on aligning IT services with the needs of business.
+	* Service Strategy
+	* Service Design
+	* Service Transition
+	* Service Operation
+	* Continual Service Improvement (CSI)
+Service Strategy
+It is the first stage of ITIL, which lays down the blueprint of a new service 
+(or changes in an existing service). The proper plan and roadmap of the service is prepared 
+in this stage. All the aspects of services like value creation, resources, capabilities, 
+investment, portfolio, etc. are discussed in this phase.
+
+*Service Design
+This is the next phase of ITIL, wherein, architecture of the new or changed service takes place, 
+as per the service strategy. It also lays down the processes, policies and solutions as per the 
+business requirements.
+
+*Service Transition
+This is the third stage of ITIL and the main objective of this stage is plan, manage, 
+build and deploy the new or changed IT service in the production (real world). This stage also 
+drafts the risk management and back out plans. Change management is one of the important 
+processes which comes under service transition, which is explained later.
+
+*Service Operation
+This stage of ITIL focuses on the day to day IT services, which are delivered to the customers. 
+It makes sure that; every IT service is delivered efficiently without any (or at minimum possible)
+disruption. This stage introduces various processes, which need to be carried out in case of 
+service disruption, incident management and problem management being important among them.
+
+*Continual Service Improvement (CSI)
+This stage highlights the steps that could be taken, to increase the overall efficiency and 
+performance of the service. The CSI works closely with all the other stages and identifies 
+improvement opportunities with metrics driven approach.
+
+#Processes in ITIL:
+  Now let's look into the three main processes in ITIL. The Change Management comes under 
+  Service Transition and Incident Management and Problem Management comes under Service operation.
+
+Change Management
+Incident Management
+Problem Management
+--------------------------------------------------------------------------------------------------
+
+---------------------------------SSH questions starts-------------------------------------
+Q. Difference botween telnet and ssh?
+A. Telnet transfers the data in simple plain text. On other hand SSH uses Encrypted 
+   format to send data and also uses a secure channel. No authentication or privileges 
+   are provided for user's authentication. As SSH is more secure so it uses public key 
+   encryption for authentication
+-------------------------------------------------------------------------------------------
+Q. what is SSH protocal and how its works?
+A. SSH or secure shell is a secure protocal and most common way of safety administering 
+   remote servers. Because it encrypt data while transfering from one host to another host
+   port: 22
+   Config file: /etc/ssh/sshd_config
+   demon: sshd    
+------------------------------------------------------------------------------------------ 
+Q. HOw does the port farwarding works in SSH?
+A. example client is going to connect using the different port number(in this case 2048)
+   other than the default, we have to use 
+   # ssh -p 2048 from the client machine.
+   ssh server port farwarding using fire wall redirection 
+-------------------------------------------------------------------------------------------
+Q. what are different data manipulations(encryption)technique supported by SSH?
+A. SSH supports Symentric and Acymmetric encryption methods.
+-------------------------------------------------------------------------------------------
+Q. how to disable root login for server?
+A. Cd /etc/ssh/sshd_config
+   permitrootlogin no
+-------------------------------------------------------------------------------------------
+Q. How to enable only key based authentication ?
+A. Note: we have to disable the user log in to SSH
+   # RSAauthentication yes
+   # publicauthentication yes
+-------------------------------------------------------------------------------------------
+Q. is it possible to log in to remote SSH server with password.
+A. yes we can do by setting up key based authentication.
+-------------------------------------------------------------------------------------------
+Q. Difference botween telnet(23) and ssh(22)?
+A. Telnet transfers the data in simple plain text. On other hand SSH uses Encrypted 
+   format to send data and also uses a secure channel. No authentication or privileges 
+   are provided for user's authentication. As SSH is more secure so it uses public key 
+   encryption for authentication   
+-------------------------------------------------------------------------------------------
+Q. How to limit SSH access to the specific subnet ?
+A. under ssh config file
+   address family 0.0.0.0/32
+-------------------------------------------------------------------------------------------
+Q. HOw to restrict SSH service to use only protocol version 2 or 1?
+A. SSH config file 
+   protocol 2
+-------------------------------------------------------------------------------------------
+Q. what is the best procedure to trouble shoot SSH conection errors?
+A. To enable Dbuging in ssh command use -v option which gives more appropreste and deep
+-------------------------------------------------------------------------------------------
+Q. How to check SSH version?
+A. ssh -v
+-------------------------------------------------------------------------------------------
+Q. How to connect to remote IPv6 enabled server?
+A. ssh -6 root@remoteserver
+-------------------------------------------------------------------------------------------
+Q. what is the procedure to log SSH errorsto saparate file?
+A. Using option -E log file will send an standard errors to specified file.
+-------------------------------------------------------------------------------------------
+Q. How many types of key types SSH supports?
+A. RSA, DSA, ECDSA, ED 25519.
+-------------------------------------------------------------------------------------------
+Q. where the ssh client keys will be stored ?
+A. .ssh/known_keys
+-------------------------------------------------------------------------------------------
+Q. What is the role of authorised key files?
+A. /.ssh/authoried kes ---file stores all client keys to provide password less authentication
+----------------------------------*SSH questions closed------------------------------------
+-------------------------------------------------------------------------------------------
+Q. Command used to scan the newly inserted hard disk
+A. just need to rescan the luns by passing the command
+   echo command to scan disk in linux
+# echo "- - -" > /sys/class/scsi_host/host0/scan
+first - specify lun id'scan
+      - disk number
+	  - storage path will be define
+-------------------------------------------------------------------------------------------
+Q. Ho to convert ext3 to ext4.
+A. first need to unmount the hard disk
+# unmount /dev/sda5
+# tune2fs -O extent, uninit_bg,dir_inde /ev/sda5
+# fsck -pf /dev/sda5
+# e2fsck -f /dev/sda5
+mount -t ext4 /dev/sda5
+#df -Th
+------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------
+Q. what is the default PID for root?
+A.for root: 1
+  ps -u user name for user list 
+  ps -ef | grep processname
+-------------------------------------------------------------------------------------------
+Q. Default permissions of .ssh directory and files inside
+A. /.ssh -----------> 700
+   id_rsa.puplic ---> 600
+   .pub ------------> 644
+-------------------------------------------------------------------------------------------  
+Q. HOw to configure password less authentication?
+A. By passing the command ssh-keygen
+   # ssh-copy-id -i id_rsa.pub user@ip
+or # ssh-copy-id user@ip
+-------------------------------------------------------------------------------------------   
+Q. How to list the specified user files?
+A. # fuser
+-------------------------------------------------------------------------------------------
+Q. List of openfiles?
+A. # lsof
+-------------------------------------------------------------------------------------------
+Q. How do you find the no space left on your device how to debug this?
+A. which means no enough space left over 
+   df -h will list the file system 
+   afet that du -h /data
+   cd /data
+   du -sh and then will remove the o files
+-------------------------------------------------------------------------------------------
+Q. HOw will you copy a file from one machine to other machine?
+A. scp -r(dir) /filepath user@ip.addre:/temp
+   scp /filepath user@ip.addr:/temp
+-------------------------------------------------------------------------------------------
+Q. How to change ownership of dir/sub-dir/and files inside dir/sub-dir/and
+A. # chown -R user:group <directory>
+-------------------------------------------------------------------------------------------
+Q. HOw do you know if a remote host is alive or not?
+A. ping 
+    # ping user@ip
+-------------------------------------------------------------------------------------------
+Q. Kill the process ID.
+A. # kill -9 pid
+-------------------------------------------------------------------------------------------
+Q. How To report a snapshot? current process
+A. # ps -ef | grep apachi2
+-------------------------------------------------------------------------------------------
+Q. How to find the listuning process?
+A. # netstat -ntlp | grep Listen
+  -n numeric Values
+  -t stand for TCP ports
+  -l long listing
+  -p process id
+-------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+Q. How to check the locked user/root
+A. Config /etc/shadow
+-----------------------------------------------------------------------------------------
+Q. how to unlock and lock user.
+A. To Lock user    # usermod -L username
+   To Unlock user  # usermod -U username
+------------------------------------------------------------------------------------------
+Q. How to find the type of os vertion in linux
+A. /etc/os-relese
+------------------------------------------------------------------------------------------
+Q. HOw to check the load Average/ server performance
+A. uptime is the command
+------------------------------------------------------------------------------------------
+Q. default full permissions to which directory?
+A. /temp
+------------------------------------------------------------------------------------------
+Q. Umask means and default permissions?
+A. User file creation mode is a linux command that is used to assigne the default 
+   permissions to a file/dir
+default values are
+To a root 022
+To a user 002
+We can also change the Umask value # unask 001
+-----------------------------------------------------------------------------------------
+Q. command used to check the whether the DNS is configured corectly?
+A. # nslookup
+-------------------------------------------------------------------------------------------

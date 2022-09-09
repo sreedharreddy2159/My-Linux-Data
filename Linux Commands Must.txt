@@ -1,0 +1,343 @@
+------------------------------------Indux----------------------------------------------
+Indux
+   ls
+   cat
+   hostname & hostnamectl commands
+   nslookup command
+1. arp command
+2. alias command
+3. at command
+4. awk command
+5. cut command
+6. bc command – calculator
+7. cal command to see calendar
+8. cat command in detailed
+9. cd command – switch between directories 
+10. chage command – to check user password policy details
+11. Protect files from accidental deletion
+12. change group ownership of files & directories
+13. chmod command most important
+14. change ownership of files & directories
+15. tr command
+16. copy files & directories
+17. crontab with ultimate examples
+18. cpio command
+19. curl command – crawl website data
+20. date command – mostly used command
+21. dd command – backup important data & performance testing
+22. df command – disk space check
+23. dig command – troubleshoot DNS issues
+24. diff command – compare two files or more
+25. Check file & directory size - du
+26. expr command – mostly used in shell scripting for math’s
+27. fdisk utility
+28. file command
+29. find command – to search anything within server
+30. free command – to check memory usage
+31. Write strict firewall rules – firewall-cmd
+32. grep command – powerful use for log analyzing
+33. head and tail commands
+-----------------------------------------------------------------------------------------
+---------------------------Linux File system---------------------------------------------
+Linux File system
+/root	: root user home directory (not same as /)
+/dev		: systems devices (cdrom, speakers, keyboard etc)
+/etc		: configuration files
+/bin or /usr/bin : Everyday user commands
+/opt		: optional add-on applications
+/lib or /usr/lib	: c programming library files needed by commands
+/tmp		: directory for temporary files
+/home	: directory for user
+/var		: system logs or application logs
+/mnt		: to mount external file systems
+---------------------------------------------------------------------------------------
+------------------------ls command – listing files and directories-----------------------
+# ls 
+ -R List recursively - using option ‘-R’ you can list files and directories in recursively
+ -lS Print the allocated size of each file, in blocks, option ‘-S’ you can sort by file size
+ –lX Sort by alphabetical order – List files alphabetical order you have to use -X option
+ -T1 List with tab space- ls command default will display file space as eight columns, 
+     using -T we can print with more tab space in between files
+ ----------------------------------------------------------------------------------------
+-------------------------CAT - COMMAND TO SEE FILE CONTENT-------------------------------
+CAT - COMMAND
+Concatenate files and print on the standard output. Cat command used to see the content 
+of text files. Cat is a core utility, which comes along with Operating System installation
+no need to install separately
+
+Syntax
+# cat <Options> <File Name>
+ –b: option cat command will show the content with numbered lines, excluding blank 
+    lines.
+ -E: will add $ (dollar sign) to end of the line including empty lines
+ -n: Add numbers to all the lines including empty lines using option –n cat command
+-----------------------------------------------------------------------------------------
+--------------------------------------tr command-------------------------------------------------
+tr command
+ lower case to upper case letter
+ # tr a-z A-Z < file
+ upper case to lower case 
+ # tr A-Z a-z < file
+ # cat file | tr -d A
+ will delete letter A from file
+ # cat file | tr [:space:] '\t'
+ will apply space to each and every word
+------------------------------------------------------------------------------------------
+----------------------------------CUT Command--------------------------------------------
+CUT Command
+To cut parts of lines from specified files and print the result to standard output. Cut parts of line by delimiter, bytes and character
+# cut -c 1 filename	= select only first character
+# cut -c 2,4,6 filename	= select 2,4,6 characters
+# cut -c 1-4 filename	= list range of characters
+# cut -b 3- filename	= from 3rd byte to end byte of line
+# cut -b -6 filename	= from 1st byte to 6th byte of line
+# cut -d “:” -f 3 filename = cut using delimiter 	
+# ls -l | cut -c 2-5
+------------------------------------------------------------------------------------------
+-----------------------------------cp Command---------------------------------------------
+cp Command
+ # cp <source> <destination>
+ # cp -a <source> <destination>
+ -a will add all the preservetive like time, permissions
+----------------------------------------------------------------------------------------
+------------------------------------sort comand--------------------------------------------
+sort command
+# 
+------------------------------------VI Editor-------------------------------------------
+VI Editor
+:w		- save file but not quit
+: q 		- to quit if you haven’t made any edits
+: wq	- save contents and quit
+: q!		- force quit
+ZZ		- quit vi and save edits mode
+G		- moves to the last line of the file
+:set_number
+h 		- left one space
+l		- right one space
+j		- down one space
+k 		- up one space
+dd 		- delete / cut the entire line
+3dd 	- delete 3 lines 
+dw		- delete a word
+yy		- copy the current line
+3yy 	- copy 3 lines
+p		- paste the copied content
+yw 		- copy a word
+7yw	- copies 7 words
+x		- delete a character
+o 		- new line for text entry below the cursor
+O		- new line for text entry above the cursor
+/search	- cursor goes to searched key word
+---------------------------------------------------------------------------------------
+---------------------------------diff Command-------------------------------------------
+diff Command
+Compare Multiple Files Content
+# diff <file1> <file2>
+# diff -i <file1> <file2> (ignore case sensitive)
+# diff -iy <file1> <file2> (provide the information side by side)
+---------------------------------------------------------------------------------------
+----------------------------------Find command------------------------------------------
+Find command
+# find 	: search for files in a directory hierarchy
+# find . -iname filename – search in current dirctory and -i will ignore the case sensitive
+# find /etc -iname filename – search in /opt directory
+# find /opt -type f -empty – search for empty files
+# find /opt -type f -iname filename – search for file not dir
+# find /opt -type d -iname filename – search for dir
+# find /opt -type d -empty – search for empty directories
+# find . -type f -name “*.txt” – find all txt files in directory
+# find . -iname <filename> -exec rm -i {}\; ( to remove the file after finding)
+# find -perm 0777 (will find the files as the files with specified permissions)
+# find -perm 0777 -exec chmod 755 {}\; (to change the permissions )
+# find . -size 10M (size can be find )
+# find . -maxdepth 1 -iname "*.txt" 	
+# find . -nouser -o -nogroup (can find the no user no group and can be deleted) 
+----------------------------------------------------------------------------------------
+-----------------------------------Locate command---------------------------------------
+locate command works faster than find command because instead of searching the file system it searches through the database. Database needs to be updated.
+updatedb 	- This command is used to update db
+locate filename – searches for the filename specified
+locate “*.html” – searches for all .html files
+locate -c “*.html” – display count of .html files
+------------------------------------------------------------------------------------------
+---------------------------------Head & Tail----------------------------------------------
+Head & Tail
+# head -n3 /etc/passwd
+# head -n3,6-7 /etc/passwd
+# cat /etc/passwd | head -n3
+# tail -n3 /etc/passwd
+# tail -n3,6-7 /etc/passwd
+# cat /etc/passwd | tail -n3 
+-------------------------------------------------------------------------------------------
+----------------------------------more & less----------------------------------------------
+more & less
+more: will view the content of file one page at a time and to view the next page enter the space bar
+Less: to view the cotent of the file and the next page can navigate the up and down keys 
+-------------------------------------------------------------------------------------------
+-----------------------------soft link & hard link-------------------------------------------
+Soft link:
+A soft link (also known as Symbolic link) acts as a pointer or a reference to the 
+file name. It does not access the data available in the original file. If the earlier 
+file is deleted, the soft link will be pointing to a file that does not exist anymore 
+Synatx:
+# ln -s file1 /temp/file2
+Hard line:
+A hard link acts as a copy (mirrored) of the selected file. It accesses the data 
+available in the original file. If the earlier selected file is deleted, the hard 
+link to the file will still contain the data of that file.
+Syntax:
+# ln file1 /temp/file2
+-------------------------------------------------------------------------------------------
+----------------------------------hostname –A----------------------------------------------
+hostname –A
+ -A: is the option to display host short name and FQDN (Fully Qualified Domain Name)
+ –I: or I will provide you with host IP address of all interfaces
+ -y: is the option, which will display the NIS domain name, if your host is part of 
+     NIS client
+-----------------------------------------------------------------------------------------
+---------------------------------nslookup command-----------------------------------------
+Nslookup is a program to query Internet domain name servers. Nslookup has two modes:
+interactive and non-interactive.
+Interactive: This mode allows the user to query name servers for information.
+Non-Interactive: This mode used to print just the name and requested information for a 
+host or domain
+
+Syntax:
+#nslookup google.com
+#nslookup 8.8.8.8
+#nslookup corp.ads.server-computer.com
+--------------------------------------------------------------------------------------
+----------------------------------grep/egrep--------------------------------------------
+global regular expression  print
+grep	: global regular expression print - print lines that match patterns
+grep -c	: search for a keyword and count
+grep -i 	: ignore case-sensitive
+grep -n 	: display matched lines and line numbers
+
+egrep 	: search for 2 keywords
+egrep -i “keyword1|keyword2” file
+egrep -i “keyword1|keyword2” *
+# grep -v "^$" filename (will remove the empt lines of the listed data)
+# grep -iv "^line" finename (will list the line starts with line)
+-----------------------------------------------------------------------------------------
+------------------------------------awk command------------------------------------------
+For data extraction, to extract fields from a file, Knowing the basics of 
+awk will significantly improve your ability to manipulate text files on the command line.
+awk ‘{print}’ filename or awk ‘{print $0}’ filename – Prints the file content
+awk ‘{print $1}’ filename – prints first field from file
+awk ‘{print $1,$3}’ filename – prints 1st and 2nd field from file
+ls -l | awk '{print $2}'
+ls -l | awk '{print $NF}'
+awk -F: '{print $1}' /etc/passwd
+awk -F : '{print $1 ":" $3}' /etc/passwd
+awk '/searchstring/ {print}' filename
+df -h | awk '/56/ {print $1}’
+cat filename | awk '{$2="sagar"; print$0}'
+cat filename | awk '{print NR,$0}' – prints number of records
+cat filename | awk 'NR==2{print NR,$0}'
+ls -l | awk '{print NF}‘ – Prints number of fields
+------------------------------------------------------------------------------------------
+---------------------------------chage command--------------------------------------------
+Enforce Users To Change Passwords Frequently
+url: https://www.youtube.com/watch?v=zENZ3sPaLhI
+Configuration file
+#cat /etc/shadow
+2nd field starts with $ indicates that unlocked 
+or field starts with ! indicates that locked
+3 rd number of days the pw get expired
+4 rd fiels indicates number of days pw has to changed
+5th fiels indicates after these many days need to change the pw prompt the users
+6 th field indicates that how many days after the pw expires and account is disaled 
+syntax
+#chage -l <username>
+-d last day
+-E expirydate
+-I Inactive
+-l List
+-m minimum days
+-M Max days
+-W warn days
+Example:
+#chage m 0 M 90 -w 10 -I 15 -E "yyyy-MM-DD" <username>
+if the user wants to change the pw to prompt to the user once login
+#chage -d o username
+but check the execution with echo $?
+-------------------------------------------------------------------------------------------
+---------------------------------tar command-----------------------------------------------
+The Linux 'tar' stands for tape archive, is used to create Archive and extract 
+the Archive files. tar command in Linux is one of the important command which 
+provides archiving functionality in Linux.
+syntax:
+To compress file or folder
+# tar -czvf name.tar.gz <file/dir>
+To extract file
+# tar -xzvf name.tar.gz
+Explaining flags
+-c compress
+-z uncompress or compress if creating a tar.
+-v verbose - list all files as they are processed.
+-f use a file (The file you are uncompressing)
+-x exrtract
+---------------------------------------------------------------------------------------
+---------------------------------Curl Linux Command---------------------------------------
+Send and Receive Files
+The curl command transfers data to or from a network server, using one of the supported
+protocols (HTTP, HTTPS, FTP, FTPS, SCP, SFTP, TFTP, DICT, TELNET, LDAP or FILE). 
+It is designed to work without user interaction,so it is ideal for use in a shell script.
+syntax:
+# curl websitename (example https://www.google.co.in/ )
+# curl -o wbsite.tar <https://www.google.co.in/>
+-o detemines that data can be stored in mentioned file
+-O (capital O helps to download the file with same name no need to specify the file name)
+------------------------------------------------------------------------------------------
+-----------------------------------date command-------------------------------------------
+# date
+# date -u (universal time)
+# date -d now
+# date -d yesterdays
+# timedatectl list-timezones
+# date --date='TZ="Africa/Algiers"'
+-----------------------------------------------------------------------------------------
+------------------------------------dd Command-------------------------------------------
+dd means Disk done, used to create images, copying content from one hard disk to another hard disk 
+measuring io backups and restoring image back up from one location to another location
+syntax:
+To copy data from one disk to other disk
+# dd if=/dev/sdb of=/dev/sdc status=progress
+if -- input file
+of -- output file
+check with fdisk -l /dev/sdc
+# mount /dev/sdc1 /media
+# cd /media
+# ls  (will see the files)
+To creating image of one disk data to other disk
+before this need to unmountdisk
+# dd if=/dev/sdc of=/temp/sdcimage.img status=progress
+To compress the image file no status rule
+# dd if=/dev/sdc | gzip > /temp/sdcimage.img.gz 
+# dd if=/temp/sdcimage.img.gz of=/dev/sdd
+-------------------------------------------------------------------------------------------
+---------------------------------- Hostname------------------------------------------
+1st Method of changing hostname
+# vi /etc/hostname	- change the hostname
+# vi /etc/hosts		- map ip address to hostname
+
+2nd Method
+# hostnamectl   set-hostname   host_name
+# exec bash
+# vi /etc/hosts		-  map ip address to hostname
+----------------------------------------------------------------------------------------
+---------------------------------listuning process----------------------------------------
+listuning process
+# netstat -ntlp | grep Listen
+  -n numeric Values
+  -u stand for UDP ports
+  -t stand for TCP ports
+  -l long listing
+  -p process id
+
+
+
+
+
+

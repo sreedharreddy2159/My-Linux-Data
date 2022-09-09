@@ -1,0 +1,390 @@
+--------------------------------------Net working--------------------------------------------------------
+In RHEL7 the default networking service is provided by networking manager which is dynamic network control
+and configuration daemon
+user canot directly interact with network manager , instead user perform network configuration task via 
+graphical and command line user interface tools 
+The fallowing tools are available in RHELv7
+1. nmtui ( it is a cursor based text user interface tool
+2. nmcli ( its a command line interdace, it is provided to allow users to interact with network manager)
+now go to RHEL server
+To check how many ethernet network connections are there
+# nmcli connection show | grep ethernet
+will show only one ethernet device if we wnat to add one more network #poweroff and go to network>bridge network
+# nmcli device status | grep ethernet
+now will show one more ethernet device disconnected status
+now we are going to add static ethernet connection
+# nmcli connection add type ethernet con-name enp0s8 ifname enp0s8 ip4 192.168.1.130/24
+# nmcli connection show | grep ethernet 
+# ip addr
+Suppose tochange the ip address of a network connections 
+# nmcli connection modify enp0s8 ipv4.addresses 192.168.3.130/24
+# nmcli connection modify enp0s8 ipv4.method manual 
+# nmcli connection up enp0s8
+above three commands will help to change the network connections
+let us verify ip connectivity
+# ip addr 
+------------------------
+Another method of changing r setting ip address
+# cd/etc/sysconfig/network-scripts/
+# vi ifcfg-enp0s8
+TYPE=Ethernet
+IPADDR=192.168.3.200
+NETMASK=255.255.255.0
+NAME=enp0s8
+UUID=bc**
+DEVICE=enp0s8
+ONBOOT=yes
+(save)
+# system restart network
+# ip addr
+* if we want to delete a connection 
+# nmcli connection delete enp0s8 
+* if we want to configure DNS address/ to change DNS address
+# nmcli connection modify enp0s3 ipv4.dns "192.168.0.1 8.8.8.8"
+# systemctl restart network
+# cat /etc/resolv.conf
+How to configure host name 
+# nmcli general hostname rhelserver.wipro.com
+# systemctl restart systemd-hostnamed
+To verify
+# hostnamectl
+# vi /etc/hosts
+last line 
+192.168.0.130 rhelserver.wipro.com rhelserver
+similarly we can also give ip address to the client in the same file next 
+192.168.0.150 rhelclient.wipro.com rhelclient 
+save (escape :qw!) 
+nowwe can ping with name 
+# ping rhelclient (chect the client to be powerd on and ping command uses ICMP internet controm messaging protocol))
+If ICMP is blocked then ping command will not work
+or 
+# traceroute google.co.in (viawhich packet is going we can see)
+To check weather DNS server is working properly 
+# nslookup google.co.in
+---------------------MAC-media access control address(48 bit hexa desimal number)-------------------------
+# arp -a (to check the mac addrss reolved ) 
+# netstat -nr (to check weather routing table tis fine )
+# netstat -i (to check the network stat of interfaces)
+ 
+-------------------------------Firewall cmd--------------------------------------------
+ Firewall cmd
+ A firewall is a network security device that monitors incoming and outgoing network 
+ traffic and permits or blocks data packets based on a set of security rules. 
+ Its purpose is to establish a barrier between your internal network and incoming 
+ traffic from external sources (such as the internet) in order to block malicious 
+ traffic like viruses and hackers.
+IP tables and fire walls is the same but options are different uses the netfilter from the
+kernal mode 
+# systemctl stop iptables 
+# systemctl mask iptables 
+# systemctl mask ip6tables
+# systemctl status iptables
+How to configure firewall 
+# yum install -y firewalld firewall-configure
+(if it is not enabled need to enable)
+# systemctl status firewalld.service 
+(to enable the service)
+# systemctl enable firewalld.service 
+To get the default zone of firewall)
+# friewall-cmd --get-default-zone 
+To set zone)
+# friewall-cmd --set-default-zone=public 
+To list the total active zones)
+# friewall-cmd --get-active-zone 
+To list the zone interface)
+# firewall-cmd --zone=public --list-interface 
+To add the interface )
+  
+To remove the interface )
+# firewall-cmd --remove-interface=ens33 --zone=public 
+To list all the services)
+# firewall-cmd --get-services 
+To list the services in a zone)
+# firewall-cmd --list-all 
+To add port to the fire wall
+# firewall-cmd --permanent --add-port=<88/tcp> 
+To add the port to the other zone 
+# firewall-cmd --permanent --zone=public --add-port=80/tcp
+# firewall-cmd --reload
+To list posts
+# firewall-cmd --list-ports 
+# firewall-cmd --zone=public --list-ports
+To add service to the specified zone and after need to reload the server
+# firewall-cmd --permanent --zone=public --add-service=http
+To farward the port to other port adding rich rule
+# firewall-cmd --permanent --add-rich-rule "rule family=ipv4 source addressrule <0.0.0.0/3> forward-port port=2080 protocol=tcp to port=80"
+To block entire inbond and out bond services
+# firewall-cmd --panic-on
+To unblock the entire inbond and out bond services
+# firewall-cmd --panic-off
+-------------------------------------------------------------------------------------------
+---------------------------------selinux--------------------------------------------------
+Q. selinux-# getsebool -a |grep httpd (will reflect policies)
+A. Security-Enhanced Linux (SELinux) is a security architecture for Linux® systems 
+   that allows administrators to have more control over who can access the system. 
+   It was originally developed by the United States National Security Agency (NSA) 
+   as a series of patches to the Linux kernel using Linux Security Modules (LSM)
+Configuration file: 
+# /etc/selinux/confif
+there are three modes:
+1. 1-enforsing will have full security
+2. 0-permissive - no security will have a worning msg
+3. disable - no security
+commands:
+# getenforce (single line information)
+# sestatus   ( more information)
+to chnge the Security
+# vi /etc/selinux/config
+change 
+SELINUX= enforsing or permissive or disable
+wq! (next need to reboot the sever then only the changes will reflect)
+SELINUX policies 
+# getsebool -a |grep httpd (will reflect policies)
+To set change the policies 
+# getsebool -P <past the policy by listing above command>=1 (binery 1 is on & for off 0)
+To check the changes 
+# getsebool -a |grep httpd
+-------to change the SELINUX temperory --------------
+# setenforse 0 
+0 permissive
+1 enforsing 
+----------------------------------------------------------------------------------------------------------
+----------------------------------------Break the root password-------------------------------------------
+How to break the root password/if we do not know the ROOT password
+Initially we need to poweroff the machine 
+Lets power it on again and when the boot menu comes press e (e for editing)
+go to the line which starts with 
+linux16
+then go to the end of the line by pressing end key 
+now give space and type 
+
+\rd.break
+we have to boot the machine by pressing "ctlx" 
+now we need to remount the root file system on /sysroot dir in read write mode 
+# mount -o remount,rw /sysroot 
+next switch ro /sysroot dir 
+#chroot /sysroot 
+now we canchange the password by fallowing command 
+# echo Sree@123 | passwd root --stdin (enter) 
+now we have to fourse selinux to reliable all the root file system
+# touch /.autorelabel(enter after "ctld" 2 times)
+hen takes time to to redirect to login screen and can log in with new password by clicking on not listed  
+
+  
+--------------------------------------arp-----------------------------------------------
+arp stands for address resolution protocol this protocol is used by the network systems
+to match IP address to MAC address 
+Facilities to determine physical address while sending packet
+Answering request for other machines
+How it works:-
+It uses local cache to Mac IP addresses to MAC addresses
+If remote machine is known mac address is placed in frame and sent
+If not Known, Broadcast will be sent and wait for reply
+Target machines recognises packet its own address send the answers
+Aarp comment will provide below information
+ address-( IP address)
+ HW type-( hardware type)
+ HW address-( m a c address)
+ Flags
+ Mast
+ IFace- ( local machine interface name)
+Arp Flafs
+C- Complete  entry
+M- Permanent Entry
+P-  Publish Entry
+Configuration files:
+/etc/net/arp
+/etc/networks
+/etc/hosts
+/etc/ethers(contains 48 bit Ethernet addresses)
+
+Syntax and examples:
+# arp -a (to check the mac addrss reolved )
+#arp -n
+#arp -d <IP>/<MAC Addr>
+to delete HW address
+how to add MAC address to the IP
+#arp -s <IP address> <MAC Address>
+-----------------------------------------------------------------------------------------
+----------------------------------if config comand---------------------------------------
+# ifconfig -a (will display all the interface )
+# ifconfig ens33(interface name) (will display the perticular inter face details)
+we can also down the inter face by the fallowing command
+# ifconfig docker0 down
+To bring up the interface up
+# ifconfig docker0 up 
+we can change the mac address details to any interface, but physical hW will have thir own MAC
+# ifconfig <dockero> hw ether 02:42:2f:50:03:1e
+------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

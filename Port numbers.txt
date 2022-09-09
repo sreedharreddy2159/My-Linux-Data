@@ -1,0 +1,75 @@
+  Demon            Service    port full form with configuration file 
+  vsftpd           FTP          21 File transfer protocol(/etc/ssl/ftpc/ftpc. conf) layer TCP
+  sshd             ssh          22 securedshell(/etc/ssh/sshd_config) layer TCP/UDP
+telnet.socket-     Telnet       23 /etc/xinetd. d/telnet. for 
+                   sftp         22 secured file transfer protocol(
+  postfix          postfix      25 (587) mail server(/etc/postfix/main.cf)
+  sendmail         send mail    25 mail server(/etc/mail/sendmail.cf)
+   named           DNS(TCP&UDP) 53 domain name system(/etc/named.conf)(DNS1 to contact DNS),/etc/resolve.conf(layer TCP/UDP)
+  httpd            HTTP         80 hypertext transfer protocol(/etc/httpd/conf/httpd. conf) 
+                                   document root with respect http server(/var/www/html) for layer TCP	   
+  apache2          Apache       80 web server(/etc/httpd/conf/httpd.conf or difault root dir /var/www/html)
+  chronyd          chrony      323 is a daemon for synchronisation of the system clock
+		                           (/etc/chrony.conf file)
+  mod_ssl          HTTPS       443 Hypertext transfer protocol secure() both layer TCP/UDP
+mysqld.service-    mysql      3306 db server(/etc/my. cnf or etc/mysql/my. cnf )
+mssql-server       SQL        1433 DB server(/var/opt/mssql/mssql-conf)
+nfs-server         nfs        2049 network file sharing(/etc/exports) builts on TCP 
+                   oracle     1521 ()
+postgresql.service postgrwsql 5432 (/var/lib/pgsql/data/)
+                   snmp        161 simple network management protocol() both layer TCP/UDP
+   ntpd            NTP(nano sec123 Network transfer protocol (/etc/ntp.conf or /etc/chrony.conf) builts on UDP 
+                   PTP
+				   cronyd
+nginx.service      nginx        80 /etc/nginx/nginx. conf 
+ 7(smb&nmb         SAMBA       file sharing(/etc/samba/smb.conf)CIFS filesystem used for filesharing
+  6-smbd nmbd)                      comand to check the smbclient -l <server2>
+   dhcpd           DHCP            /etc/dhcp/dhcpd.conf
+                   at              one time job(/var/spoot/at
+                                   /var/spoot/at/spool,/proc/loadavg, /var/run/utmp, 
+								   /etc/at.allows, /etc/at.deny
+systemd-hostnamed					Hostname 	
+                icmp protocol  ping    		   
+-----------------------------------------------------------------------------------------
+Q. Listuning port command
+listuning process
+# netstat -ntulp | grep Listen
+  -n numeric address 
+  -t stand for TCP ports
+  -u stands for UDP ports 
+  -l long listing
+  -p process id
+
+What is the profile of DHCP?
+Package : dhcp*
+Script file : /etc/init.d/dhcpd
+Configuration file : /etc/dhcp/dhcpd.conf
+Deamon : dhcpd
+Port numbers : 67 (dhcp server) and 68 (dhcp client)
+Log messages : /var/log/message
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

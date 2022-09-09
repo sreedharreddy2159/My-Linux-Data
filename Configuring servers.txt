@@ -1,0 +1,690 @@
+--------------------------------crontab---------------------------------------------------
+Crontab 
+stands for “cron table”. It allows to use job scheduler, which is known as cron 
+to execute tasks. Crontab is also the name of the program, which is used to edit that 
+schedule. It is driven by a crontab file, a config file that indicates shell commands 
+to run periodically for the specific schedule
+Configuration file:
+# /etc/crontab
+deamon:-
+systemctl restart crond 
+commands:
+to list cron jobs
+#crontab -l
+-l to list crontab
+-e to edit 
+-r to remove
+#/etc/cron.allow (edit thefile and enter the username to allowthe user)
+#/etc/cron.deny (to deny a specy user in the mentioned file)
+Fields:
+     minute---------> 0–59
+	 hour  ---------> Based on a 24-hour clock; for example, 14 = 2 P.M. 
+	 day of month---> 1–31
+	 Month ---------> 1–12, or jan, feb, mar, etc.
+	 day of week----> 0–7; where 0 and 7 are both Sunday; or sun, mon, tue, etc.
+-------------------------------------------------------------------------------------------
+----------------------------------Configure YUM.repo-------------------------------------------
+Q. Have you configure Yum.repo.d?
+A. # cd /etc/yum.repo
+   # vi base.repo
+   [base os]
+    name=base  os 
+	base url= past url or file:///mnt
+	gpg check = 0
+	enabled = 1
+	wq!
+   # yum clean all
+   # yum repo list
+--------------------------------------------------------------------------------------------
+----------------------Configuring-[yum-server]-[yum-client]---------------------------------
+[yum-server] =>192.168.0.130/24
+[yum-client] =>192.168.0.150/24
+GATEWAY: 192.168.0.1
+DNS: 192.168.0.1
+----[yum-server]-------
+come to RHCL server
+# nmtui (network managet text user interface)
+enter
+enter
+3 tabs 
+automatic of ipv4 to manual and define ip addr and gateway and DNS server 
+come done and select by using space bar[X] save and quit
+now check the connections
+# ip addr
+# ip rout (to verify gateway)
+# cat /etc/resolve.conf
+check the internet connection 
+# ping google.co.in
+next 
+FTP service neet to restart
+# systemctl start vsftpd
+# systemctl enable vsftpd
+Now create a reposirory for all packages
+# mkdir /var/ftp/pub/server
+now go to the iso mounted
+# df -h
+# cd /run/media/root/RHEL***
+# cd packages
+# cp * /var/ftp/pub/server
+now move to repo /var/ftp/pub/server
+# cd var/ftp/pub/server
+# createrepo -v .  ( to creae data base of all packages)
+now move to yum.repo dir
+# cd /etc/yum.repos.d
+we have to create a .repo file 
+vi yum1.repo
+[yum1]
+    name=yum1repo 
+	base url=past url or file:///var/ftp/pub/server
+	gpgcheck=0
+	enabled=1
+	wq!(save)
+   # yum clean all
+   # yum repolist (to check the yum1repo if not need to stop firewalld.service
+--------------------------------------------------------------------------------------------------------
+----------------------------------cofiguring [yum-client]-----------------------------------------------
+switch to client server
+# cd /etc/sysconfig/network-scripts/
+we see ifcfg-enp0s3 file
+# vi ifcfg-enp0s3
+DEVICE=enp0s3
+TYPE=Ethernet
+BOOTPROTO=none
+NAME=enp0s3
+UUID=(same)
+ONBOOT=yes
+IPADDR=192.168.0.150
+PREFIX=24 OR NETMASK=255.255.255.0
+GATEWAY=192.168.0.1
+DNS1=192.168.0.1
+(SAVE)
+# systemctl restart network 
+# ip addr
+# ip route (gate way)
+# cat /etc/resolve.conf (network)
+# ping google.co.in
+Now we will configure yum client
+# mkdir -p /var/cache/yum/x86_64/6server
+# cd /etc/yum.repo.d
+# vi yum2.repo
+[yum2]
+    name=yum2repo 
+	base url=past url or ftp:///192.168.0.130/pub/server
+	gpgcheck=0
+	enabled=1
+	wq!(save)
+   # yum clean all
+   # yum repolist (to check the yum2repo if not showing yum2repo if not fallow the below)
+# ip addr
+ping to check
+# ping 192.168.0.130
+now go to the server to stop the firewall
+# systemctl stop firewalld.service
+# systemctl mask firewalld.service
+now go to the client server now you will see the repolist of yum2repo by using command # yum repolist
+--------------------------------------------------------------------------------------------------------------------
+-----------------------------------------NFS------------------------------------------------------------
+Q NFS configuration setup,
+---in server machine---
+  # yum install nfs or nfs(tab) -you
+  # firewall-cmd --permanent --add-service=nfs
+  # firewall-cmd --reload
+  # systemctl enable nfs-server 
+  # sysemctl start nfs=server
+  Now create files or directories
+  # mkdir /public
+  # cd /public
+  # cat > file
+  adsns sfk
+  # cd
+  # vi /etc/exports
+  (lookslike newfile initially)
+  /public *(ro, sync)
+  /public ip.addr(ro,sync)
+  WQ!
+  before sharing the files we need to run the command
+  # exports -avr (all, verbous, reexports)
+Client server   
+now open the client server any one and need to do the auto mount the load will be balanced by the
+by the server machine if we do the entries in /etc/fstab 
+Client server
+# #yum install autofs(tab) -y
+# systemctl enable autofs
+# systemctl start autofs
+after installing autofs two files will be created automount
+# vi /etc/auto.master
+fallowed by /misc /etc/auto.misc
+            /hyd  /etc/auto.misc
+# vi /etc/auto.misc
+moved to end fallowed the #linux-----
+ampt      -ro,soft,intr       ip.addr:/public
+(any dir)
+WQ!
+# systemctl restart autofs
+# cd /hyd/ampt
+#ls 
+will list the file sharing
+----------------------------------------------------------------------------------------------------------
+------------------------------------------------NFS Configuration-----------------------------------------
+NFS- Network file system 
+It is used to share files/filesystem with other UNIX/linux clients
+Will configure 
+RHEL SERVER [NFS-SERVER]
+RHEL CLIENT [NFS-CLIENT]
+
+----RHEL SERVER [NFS-SERVER]-----
+Lets go to RHEL Server
+First need to create file system
+# mkfs.xfs -f /dev/sdb  
+ -f is forecefully
+# mkdir /share
+# mount dev/sdb /share
+# df -h
+then we can see the mounting 
+now we need to change permissions 
+# chmod -R 777 /share 
+# cd /share 
+and lets create some files 
+Now we have to export the filesystem 
+# vi /etc/exports 
+(lookslike newfile initially)
+/share *(rw,sync)
+WQ!
+# sysemctl start nfs=server/nfs
+# susemctl start rpcbinding (remote procedure binding for session layer connection)
+now need to check weather the fire wall is stoped
+# systemctl status firewalld.service
+# if it is inactive and masked then 
+# exportfs -avr (all, verbous, reexports)
+# showmount -e rhelserver
+then we can see /share file is exported
+
+---RHEL CLIENT [NFS-CLIENT]----
+Now we will go to the client 
+and lets check the export list of the RHEL server
+# showmount -e 192.168.0.130
+now we have to mount the share 
+# mkdir /nfs
+# mount.nfs4 192.168.130:/share /nfs
+# mount  ( command used to check /share is mounted or not)
+# cd /nfs
+# ls -l
+now lets unmount /nfs because we have done temperory mount till now
+For configuring auto/pemanent mount of NFS share in the client using #autofs
+Configeration in client only
+#yum install autofs(tab) -y 
+# systemctl enable autofs
+# systemctl start autofs
+# vi /etc/auto.master 
+go to the last line by pressing G
+now press O for new line 
+
+/cis(tab) /etc/auto.cis 
+wq!
+# mkdir /cis
+# vi /etc/auto.cis 
+sreedhar(tab) -rw,fstype=nfs(tab) 192.168.0.130:/share 
+wq!
+now we have to restart the autofs
+# systemctl restart autofs
+# df -h (to check the filesystem is mounted if not fallow the below step)
+# cd /cis/sreedhar 
+# df -h
+now we can see mount point to /cis/sreedhar 
+# ls -l
+But autofs is not use for permanent mounting it is on demand mounting 
+now if we come out cd ..
+after some time it will automatically unmount
+by coming to /cis/sreedhar then only we can access the NFS 
+---------------------------------------------------------------------------------------------------------
+---------------------------------Configuring Apache webserver--------------------------------------------
+Apache Configuration 
+first we have to check IP address
+# ip addr 
+What is the hostname 
+# hostnamectl 
+Make shure host name should be in the form of fully qualified domain name
+if not need to provide hostname
+# vi /etc/hosts
+<ip>(tab) rhelserver.wipro.com(tab) rhelserver 
+<ip>(tab) rhelclient.wipro.com(tab) rhelclient 
+wq!
+entries are defined 
+Now wehave to insall httpd package and https 
+# yum install httpd -y
+# yum install mod 
+lets start the httpd service
+# systemctl start httpd   
+# systemctl enable httpd 
+now go to the default root directory of apachi web server /var/www/html
+under /var/www/html need to create index.html
+# cd /var/www/html
+# vi index.html 
+<html><h1> welcome to sreedhar web server !!! </h1></html>
+wq!
+Now go to RHEL CLIENT
+Now we are going to configure host name for a client 
+# nmcli general hostname rhelclient.wipro.com
+# systemctl restart systemd-hostnamed
+now let us verify the host name 
+# hostnamectl 
+make entries in the /etc/hosts
+# vi /etc/hosts
+go to the last line by pressing G
+open a new line by pressing the small o
+<ip>(tab) rhelserver.wipro.com(tab) rhelserver 
+<ip>(tab) rhelclient.wipro.com(tab) rhelclient   
+wq!
+Now open a browser 
+http://rhelserver.wipro.com 
+now we can access the web server from the client 
+----------------------------------------------------------------------------------------------------------
+------------------------------------------Fire Wall ------------------------------------------------------
+Fire Wall 
+In RHELv7 iptables are replaced by firewalld. firewalld provides dynamically manage firewall ith support 
+for network or firewall zones 
+Network zones defines the level of trust for the network connections or interfaces
+There are some pre defined network zones .
+drop
+block 
+externel 
+public 
+dmz (demilitarized zone)
+work
+home 
+internal 
+trusted 
+-------------
+Now let us go server 
+To check the status of the firewall 
+# firewall-cmd --state 
+if the fire wall the not running 
+so need to unmask
+# systemctl unmask firewalld.service 
+# systemctl start firewalld.service
+# systemctl enable firewalld.service
+now lets check the state again  
+# firewall-cmd --state
+now we can see firewall is running 
+we will not be able to acces any web service as the fire wall is been enabled si it will block the web/app service
+So go to the client server and open webserver http://rhelserver.wipro.com 
+but unable to access the web server due to the fire wall has blocked 
+Now how to add HTTPT service to the fire wall 
+before that lets come to the server what is the default network zone configure 
+# firewall-cmd --get-default-zone 
+if we want to change the default(public) networkzone
+# friewall-cmd --set-default-zone=dmz  
+# firewall-cmd --get-default-zone
+now let us check HTTP will allowed dmz
+# firewall-cmd --zone=dmz --list-services
+if httpd service is added then ok if not HTTPD service isto be added 
+# firewall-cmd --permanent --zone=dmz --add-service=http 
+# firewall-cmd --reload
+# firewall-cmd --zone=dmz --list-services/all 
+Now we will be able to access the web server 
+now go to the client server and reload the web page 
+----------now we will know how to remove the http service 
+Go to the server 
+# firewall-cmd --permanent --zone=dmz --remove-service=http
+# firewall-cmd --reload
+To add port 
+# firewall-cmd --permanent --zone=dmz --add-port=443/tcp 
+# firewall-cmd --reload
+# firewall-cmd --zone=public --list-ports
+now we can access the ebserver by using port service 
+https://rhelserver.wipro.com
+now to remove the pot number 
+# firewall-cmd --permanent --zone=dmz --remove-port=443/tcp
+# firewall-cmd --reload
+# firewall-cmd --zone=dmz --list-ports
+now we are going to add a rule in fire wall to allow https from client to server 
+# firewall-cmd --permanent --add-rich-rule 'rule family="ipv4" source addressrule="<client_ ip/24>" destination address="<server _IP>" service name="https" accept/reject'
+# firewall-cmd --reload
+# firewall-cmd --list-all 
+Come to the client andreload the web page then we can access web server 
+and to remove the rule below command 
+# firewall-cmd --permanent --remove-rich-rule 'rule family="ipv4" source addressrule="<client_ ip/24>" destination address="<server _IP>" service name="https" accept/reject'
+# firewall-cmd --reload
+--------------ping---firewall restrict ------------
+now come to the client server and check the connectivity of the server 
+# ping rhelserver.wipro.com 
+if the connection is established and how to block the connectivity of client to server 
+in brief client should not able to ping the serve( ping uses ICMP protocol) 
+so for this i will add a rule in the server 
+go to the rhel server 
+# firewall-cmd --permanent --add-rich-rule 'rule family="ipv4" source address="<client_IP>" destination address="<server_IP>" protocol value="icmp" rejaect'
+# firewall-cmd --reload 
+Now we are not able to ping the server from the client 
+if want check by going to the client and 
+# ping rhelserver.wipro.com  
+will reflect as destination port unrechable 
+Now if we remove the rule pinging will start 
+# firewall-cmd --permanent --remove-rich-rule 'rule family="ipv4" source address="<client_IP>" destination address="<server_IP>" protocol value="icmp" rejaect'
+# firewall-cmd --reload
+# firewall-cmd --list-all
+now ping connectivity will establish 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------at command(one time job)------------------------------------
+at command is used to schedule one time job.   there is no repeat execution
+At  command allows fairly Complex time specifications and extending
+it supports p o s i x standard( portable operating system interface)  IEEE 1988 family standard
+It accept time HH:MM  to run a job at a specific time of day. 
+(If the time is past the next day is assumed)
+you can also specify midnight noon  tea time  today tomorrow and next month
+giving a date of the  form  MMDD [CC]YY, MM/DD/[CC]YY, DD.MM.[CC]YY OR [CC]YY-MM-DD
+We can also specify now +  count in minutes,  HOURS, DAYS AND WEEKS
+options
+-m Send mail to user when job has completed
+-M Never send mail to user
+-f File rates the job from the file rather than standard input
+-l List the schedule jobs
+-r remove schedule job
+-V version details of at
+-c  cats the job content
+
+Configuration Files
+/var/spoot/at
+/var/spoot/at/spool
+/proc/loadavg
+/var/run/utmp
+/etc/at.allows
+/etc/at.deny
+-----------------------------------------------------------------------------------------
+----------------------dig Command | Troubleshoot DNS Issues------------------------------
+The dig (domain information groper) command is a flexible tool for interrogating 
+DNS name servers. It performs DNS lookups and displays the answers that are returned 
+from the queried name server(s).
+URL: https://www.youtube.com/watch?v=4rfXktIV6cE
+--------------------incomplete-----------------------------------------------------------
+--------------------------------------------------------------------------------------------------------
+Q. Have you configure IP address in linux?
+A. # vi /etc/sysconfig/network-scripts
+   # ifdown
+   # ifup
+   donot restart the network
+------------------------------------------------------------------------------------------
+Q. DNS and how to configure?
+A. The Domain Name System (DNS) Server is a server that is specifically used for 
+   matching website hostnames (like example.com)to their corresponding Internet 
+   Protocol or IP addresses. The DNS server contains a database of public IP addresses 
+   and their corresponding domain names.
+   nslookup to cross check weather configure correctly or not
+-------------------------------------------------------------------------------------------
+Q. Have you installed any application?
+A. Word press: web technology 
+   pre-requisits are my sql database and php
+   any how will do the aplication instalation with the help of method of proces(MOP)
+-------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

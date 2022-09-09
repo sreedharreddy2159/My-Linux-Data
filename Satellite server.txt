@@ -1,0 +1,134 @@
+Commands and their uses
+# satellite-maintain service status 
+# satellite-maintain service restart
+# 
+-------------------------------------------------------------------------------------------------------
+To manage the satelitte server need to know three inmortant things incontent 
+1. lifecycle environments
+2. content view
+3. Activation keys 
+So for satelitte customer licence is attached to satelitte so what ever the licence we have it will be tacken from the 
+redhat portal 
+we can see the licence subscription in content 
+Total NO. OF LICENCE how many are there and how many licence are been consumed 
+Now in --> Hosts --> Content Hosts 
+will list all the servers subscribed to satelitte 
+if we have any patching activity for any other servers then we need to unregistere the subscription
+
+1. lifecycle environments
+
+Once the Redhat satelitte is been created there after need to create lifecycle environment 
+Which is nothing but a group created for a repositories like 
+RHEL 7 server rpm 
+RHEL 7 optional RPM 
+RHEL 7 supplimentory RPM 
+for that need to create a envronmental group like for cloude we crated Cloud as a group
+ 
+2. content view
+Nothing but synconysing the latest packages to the satelitte server 
+Lets say we have RHEL 7.8 repos in our system and you want latest packages to be in RHEL 7 
+So we get the latest packages by synking the repo 
+In the same way here we do content view helps us to synk the latest packages from redhat portal by clicking publish new 
+IN the same way we can allocate any version to any server by clicking on promotion option in content view 
+
+Synk Plan
+--------- 
+For every quater we need to patch the server for that we dont want to do manually 
+we have synk plan at different intervals of time like daily, weekly, monthly or perticular 
+
+3. Activation keys 
+This makes a comunication between the satelitte server to client server 
+To check the activation key of environment(group) with content view by clicking on the name of listed activation key 
+we can check the existing key for every activation key 
+so now go to the perticular server 
+First we need to do 
+# subscription-manager clear (So that it will remoe all the existing subscription )
+# yum clean all
+# <past the subscription key> --force (subscription coplete)
+# yum clean all && yum repolist 
+# yum list update (to check the latest updates)
+
+Let check in the satelitte portal 
+Hosts--> content hosts ---> search with the server name 
+so then the server is available in the satelitte server 
+To check the package which is assigned to server is 
+
+repository sets-> limint to lifecycle environment
+here the enable status will get to know any patch is available are not 
+
+
+*---Day today activities in satelitte----
+1. licence clearing 
+for example every day we have to do 10 servers for patching so today we did 10 servers means already servers are connected
+with satelitte and next day for another 10 servers need to do patching means we have to remove the servers from the satelitte
+2. if the customer is not interested in quaerly patching and depends on the customer demant need to patch the server immediatly 
+so in this case 
+we canot depend upon the synk plan 
+need to go to the content view --> public version 
+we can manually synk it to the latest version and then we can patch the version 
+3. creating content view if already created no need to create 
+adding name, addinig specific repos, and synk it.
+
+---major issues related to satelitte server-
+Issue 1
+In redhat satelitte there will be one dir /var 
+
+# /var or /var/lib/pulb ( stores the repositories here) wecanalso customise this file 
+this folder should have enough space 
+this /var folder will get full as keep on storing all the repositorie packages will store in /var further leads filling 100%
+of /var and leads server get hang 
+So in order to over come this issue  
+need to extent the space of /var but required downtime 
+# satellite-maintain service stop (need to stop all the services related to satelitte)
+Then we can extend the file system and after we can stat the service 
+# satellite-maintain service restart
+or 
+we can delete older versions by going to the [content view--->open any version and delete unwanted version] but not recomended 
+
+Issue 2
+Some times 
+we face licence issue even after registering like subscription manager fails to register and the reason will be 
+THis satelitte server will have direct internet access with redhat portal so some times looses its connection 
+where we have manage manifest in content--> subscription 
+here licence file is attach here once the licence is provide by the Redhat and contains all the licence of our satelitte
+so file will loose its connection from portal and the satelitte and there fore 
+non of the servers will try to synk or get registered 
+To rectify this by clicking on refrest botton again the connection will be established 
+
+
+-----Client----------
+Is there any package or service need to be installed 
+Yes katello is the packege to be installed where it will acts like a agent between satelitte server to client server
+---> register content host wiil see all the steps how to install 
+to check weathert he package is installedor not 
+# rpm -qa | grep katello 
+in rehat repositories we can able to know available repos and enabled repos 
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

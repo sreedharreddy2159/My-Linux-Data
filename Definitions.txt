@@ -1,0 +1,427 @@
+Q. What is LVM?
+A. Logical Volume Management enables the combining of multiple individual hard drives
+   and/or disk partitions into a single volume group (VG). That volume group can then 
+   be subdivided into logical volumes (LV) or used as a single large logical volume where 
+   we can increase or shrink the Logicle volume 
+-------------------------------------------------------------------------------------------
+Q. What is selinux?
+Q. selinux
+A. Security-Enhanced Linux (SELinux) is a security architecture for Linux® systems 
+   that allows administrators to have more control over who can access the system. 
+   It was originally developed by the United States National Security Agency (NSA) 
+   as a series of patches to the Linux kernel using Linux Security Modules (LSM)
+Configuration file: 
+# /etc/selinux/confif
+there are three modes:
+1. enforsing will have full security
+2. permissive - no security will have a worning msg
+3. disable - no security
+commands:
+# getenforce (single line information)
+# sestatus   ( more information)
+to chNGE THE Security
+# vi /etc/selinux/config
+change 
+SELINUX= enforsing or permissive or disable
+-------------------------------------Booting process----------------------------------------------
+Booting process0
+6 Stages of Linux Boot Process (Startup Sequence)
+1. BIOS
+2. MBR
+3. GRUB(6 and 7 will differ)
+4. Kernel
+5. Init
+6. Runlevel programs
+#BIOS stands for Basic Input/Output System
+Performs some system integrity checks
+Searches, loads, and executes the boot loader program.
+It looks for boot loader in floppy, cd-rom, or hard drive. You can press a key 
+(typically F12 of F2, but it depends on your system) during the BIOS startup to change
+the boot sequence.Once the boot loader program is detected and loaded into the memory,
+BIOS gives the control to it.So, in simple terms BIOS loads and executes the MBR boot loader.
+#2. MBR
+MBR stands for Master Boot Record.
+It is located in the 1st sector of the bootable disk. Typically /dev/hda, or /dev/sda
+MBR is less than 512 bytes in size. This has three components 
+1) primary boot loader info in 1st 446 bytes 
+2) partition table info in next 64 bytes 
+3) mbr validation check in last 2 bytes.
+It contains information about GRUB (or LILO in old systems).
+So, in simple terms MBR loads and executes the GRUB boot loader.
+#3. GRUB
+GRUB stands for Grand Unified Bootloader.
+If you have multiple kernel images installed on your system, you can 
+choose which one to be executed.GRUB displays a splash screen, waits 
+for few seconds, if you don’t enter anything, it loads the default kernel image
+as specified in the grub configuration file.GRUB has the knowledge of the filesystem
+(the older Linux loader LILO didn’t understand filesystem).
+Grub configuration file is /boot/grub/grub.conf (/etc/grub.conf is a link to this).
+The following is sample grub.conf of CentOS.
+As you notice from the above info, it contains kernel and initrd image.
+So, in simple terms GRUB just loads and executes Kernel and initrd images.
+#4. Kernel
+Mounts the root file system as specified in the “root=” in grub.conf
+Kernel executes the /sbin/init program
+Since init was the 1st program to be executed by Linux Kernel, it has the process id (PID)
+ of 1. Do a ‘ps -ef | grep init’ and check the pid.
+initrd stands for Initial RAM Disk.
+initrd is used by kernel as temporary root file system until kernel is booted and
+the real root file system is mounted. It also contains necessary drivers
+compiled inside, which helps it to access the hard drive partitions, and other hardware.
+#5. Init
+Looks at the /etc/inittab file to decide the Linux run level.
+Following are the available run levels
+0 – halt
+1 – Single user mode
+2 – Multiuser, without NFS
+3 – Full multiuser mode
+4 – unused
+5 – X11
+6 – reboot
+Init identifies the default initlevel from /etc/inittab and uses that to load all 
+appropriate program.Execute ‘grep initdefault /etc/inittab’ on your system to identify
+the default run levelIf you want to get into trouble, you can set the default run level
+to 0 or 6. Since you know what 0 and 6 means, probably you might not do that.
+Typically you would set the default run level to either 3 or 5.
+#6. Runlevel programs
+When the Linux system is booting up, you might see various services getting started. 
+For example, it might say “starting sendmail …. OK”. Those are the runlevel programs,
+ executed from the run level directory as defined by your run level.
+Depending on your default init level setting, the system will execute the programs 
+from one of the following directories.
+Run level 0 – /etc/rc.d/rc0.d/
+Run level 1 – /etc/rc.d/rc1.d/
+Run level 2 – /etc/rc.d/rc2.d/
+Run level 3 – /etc/rc.d/rc3.d/
+Run level 4 – /etc/rc.d/rc4.d/
+Run level 5 – /etc/rc.d/rc5.d/
+Run level 6 – /etc/rc.d/rc6.d/
+Please note that there are also symbolic links available for these directory 
+under /etc directly. So, /etc/rc0.d is linked to /etc/rc.d/rc0.d.
+Under the /etc/rc.d/rc*.d/ directories, you would see programs that start with S and K.
+Programs starts with S are used during startup. S for startup.
+Programs starts with K are used during shutdown. K for kill.
+There are numbers right next to S and K in the program names. 
+Those are the sequence number in which the programs should be started or killed.
+For example, S12syslog is to start the syslog deamon, which has the sequence number of 12. 
+S80sendmail is to start the sendmail daemon, which has the sequence number of 80.
+So, syslog program will be started before sendmail.
+There you have it. That is what happens during the Linux boot process.
+------------------------------------------------------------------------------------------
+Q. What is Virtualization?
+A. Linux  virtualization is a process through which one or more virtual machines can be 
+   installed, executed and maintained on top of the Linux operating system
+------------------------------------------------------------------------------------------
+Q. Type of shell ?
+A. 1. Bourne shell(sh)
+   2. korn shell(ksh)
+   3. c shell
+   4. z shell
+   5. Bourne again shell(bash)
+-------------------------------------------------------------------------------------------
+Q. What is Hyper-v?
+A. Hyper-V is Microsoft's hardware virtualization product. It lets you create and run a 
+   software version of a computer, called a virtual machine. Each virtual machine acts 
+   like a complete computer, running an operating system and programs.
+-------------------------------------------------------------------------------------------
+Q. 7 layers of osi Model
+A. An OSI model consists of seven different layers which are typically described from
+   the top to bottom. In order from seven to one, the layers are as follows: 
+  7. application -------> End user Layer: HTTP, FTP, IRC, SSH, DNS,
+  6. presentation-------> Syntax Layer ssl, SSH, IMAP, FTP, MPEG, JPEG.
+  5. session -----------> synk and sent to port PI's, sockets, WInsockets,
+  4. transport----------> End to end connections, TCP,UDP
+  3. network------------> packets: IP, ICMP, IPsec, IGMP
+  2. data link----------> Frames: Ethernet, PPP, Switch, Bridge.
+  1. and physical-------> Physical Structure: Fiber, Wireless, Hubs, Repeaters
+--------------------------------------------------------------------------------------------------
+Q. Diference bitween layer 2 and layer 3 switches?
+A.Layer 2 Switch:(data link layer)
+   -Works with MAC address only 
+   -it can communicate with single private network
+   -Unmanaged switches
+   -most famelier with Ethernet, means devices in a ethernet network are identified by MAC
+  Layer 3 Switch(network layer)
+   -Can perform functioning of both 2 layer and 3 layer switch
+   -it can communicate with different private networks by configuring VLAN.
+   -it is network layer and protocall is internet protocol
+   -Layer 3 switches are managing routing table
+---------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------
+Q. can we replace layer 3 switch as a router?
+A. it is not recommended to replace a router with layer 3 switch, but you can apply them in the same network at the same 
+   time.
+   A layer 3 switch is both a switch and a router: it can be regarded as a router 
+   with multiple Ethernet ports and with switching function. layer 3 switch 
+   enable packets switching by inspecting both their IP addresses and their MAC addresses.
+----------------------------------------------------------------------------------------------------
+Q. NIC-Network interface bonding?
+A. Network Interface Bonding is a mechanism used in Linux servers which consists 
+   of binding more physical network interfaces in order to provide more bandwidth than
+   a single interface can provide or provide link redundancy in case of a cable failure.
+or  
+   Network bonding is a process of combing or joining two or more network interfaces 
+   together into a single interface. Network bonding offers performance improvements 
+   and redundancy by increasing the network throughput and bandwidth. If one interface 
+   is down or unplugged the other one will work.
+------------------------------------------------------------------------------------------
+Q. MAC ip?
+A. A media access control address (MAC address) is a unique identifier assigned to a 
+   network interface controller (NIC) for use as a network address in communications 
+   within a network segment.
+   /etc/sysconfig/network-scripts
+-------------------------------------------------------------------------------------------
+Q. What are the default permissions to the file and directory
+A. To the dir 777 and to file 666
+with umask  
+root(022) dir-755, file-644
+user(002) dir-775, flle-664
+-----------------------------------------------------------------------------------------
+Q. How to check the locked user/root
+A. Config /etc/shadow
+-----------------------------------------------------------------------------------------
+Q. how to unlock and lock user.
+A. To Lock user    # usermod -L username
+   To Unlock user  # usermod -U username
+------------------------------------------------------------------------------------------
+Q. How to find the type of os vertion in linux
+A. /etc/os-relese
+------------------------------------------------------------------------------------------
+Q. HOw to check the load Average/ server performance
+A. uptime is the command
+------------------------------------------------------------------------------------------
+Q. default full permissions to which directory?
+A. /temp
+------------------------------------------------------------------------------------------
+Q. Inodes?
+A. Inodes store information about files and directories (folders), such as file 
+   ownership, access mode (read, write, execute permissions), and file type. 
+   On many older file system implementations, the maximum number of inodes is fixed 
+   at file system creation, limiting the maximum number of files the file system can hold.
+--OR--
+   An inode is a data structure in UNIX operating systems that contains important 
+information pertaining to files within a file system. When a file system is created in 
+UNIX, a set amount of inodes is created, as well. Usually, about 1 percent of the total 
+file system disk space is allocated to the inode table. 
+-------------------------------------------------------------------------------------------
+Q. What is Zombi process.
+A. Zombie processes in Linux are sometimes also referred to as defunct or dead processes.
+   They're processes that have completed their execution, but their entries are not 
+   removed from the process table
+To find the Zombi process
+# top -b1 -n1 | grepz
+-------------------------------------------------------------------------------------------
+Q. What is iostate?
+A. The iostat command is used for monitoring system input/output device loading by 
+   observing the time the devices are active in relation to their average transfer rates. 
+   The iostat command generates reports that can be used to change system configuration 
+   to better balance the input/output load between physical disks.
+------------------------------------------------------------------------------------------- 
+-------------------------------------TOP- detailinig(CPU)------------------------------------------
+TOP:
+ PID    Process ID
+ USER   Owner of the process ie., which user executed that process
+ PR     Dynamic Priority
+ NI     Nice value, also known as base value
+ VIRT   Virtual size of the task includes the size of processes executable binary
+ RES    The size of RAM currently consumed by the task and not included the swap portion
+ SHR    Shared memory area by two or more tasks
+ S      Task Status
+ % CPU  The % of CPU time dedicated to run the task and it is dynamically changed
+ % MEM  The % of memory currently consumed by the task
+ TIME+  The total CPU time the task has been used since it started. + sign means it is displayed 
+        with hundredth of a second granularity. By default, TIME/TIME+ does not account the 
+        CPU time used by the task's dead children
+ COMMAND- Showing program name or process name. 
+------------------------------------------------------------------------------------------------- 
+Q. what is SMTP?
+A. SMTP stands for Simple Mail Transfer Protocol, and it's an application used by 
+   mail servers to send, receive, and/or relay outgoing mail between email senders 
+   and receivers.
+------------------------------------------------------------------------------------------
+Q. what is SNMP?
+A. Although the original purpose of the Simple Network Management Protocol (SNMP) 
+   was to let network administrators remotely manage an Internet system, the design 
+   of SNMP lets network administrators manage applications and systems. SNMP provides 
+   the following capabilities: Hides the underlying system network.
+-------------------------------------------------------------------------------------------
+Q. Difference bitweentn SMTP and SNMP?
+A. SNMP and SMTP are two standards that work together in harmony to achieve two 
+   different tasks. They work in such a way that one can control SMTP servers and MTAs 
+   through SNMP Managers. Further, SNMP Managers are capable of sending alerts through 
+   SMTP mail servers.
+-------------------------------------------------------------------------------------------   
+Q. What is DHCP and explain it?
+A. DHCP stands for Dynamic Host Configuration Protocol. DHCP is a network protocol that enables the server 
+   to assign an IP addresses to the clients in the network automatically from a defined range of IP addresses ie., 
+   scope configured for a given network
+   DHCP-Configuration file- /etc/dhcp/dhcpd.conf(dhcpd-Daemon)
+   to check the dynamic IP address from the DHCP servers is /var/libdhcpd/dhcpd.example
+   fixed address should be set in DHCP configaration file so that client wil get fixed IP
+-------------------------------------------------------------------------------------------
+---------------------------------------RAID------------------------------------------------
+Q. What is RAID? What is the use of the RAID and how many types of RAIDs available?
+A. RAID stands for Redundant Array of Independent Disks.
+   It provides fault tolerance, load balancing using stripping, mirroring and parity concepts.
+   There are mainly two types of RAIDs available.
+   (i) Hardware RAID (Depends on vendors and also more expensive)
+   (ii) Software RAID (Does not depends on vendors and less expensive when compared to 
+   Hardware RAID and also it is maintained by system administrator only.
+   
+Q. How many types of software RAIDs available and their requirements?
+  (i)   RAID - 0 ---- Stripping ---- Minimum 2 disks required--
+  (ii)  RAID - 1 ---- Mirroring ---- Minimum 2 disks required
+  (iii) RAID - (1+0) ---Mirroring + Stripping ---- Minimum 4 disks required
+  (iv)  RAID - (0+1) --- Stripping + Mirroring ---- Minimum 4 disks required
+  (v)   RAID - 5 ---- Stripping with distributed parity ---- Minimum 3 disks required
+  (VI)  RAID - 6 -----stripping with dual distributed parity 
+  (VII) RAID - 10(1+0) -----striping with mirror ---minimum 4 disks 
+  
+Q. How to configure RAID - 0 in Linux? 
+● To configure RAID - 0, minimum 2 disks are required and the partition id is "fd".
+● Reading and writing is very fast. So, it produces high performance.
+● if one disk is failed we cannot recover the data.
+● So, there is no redundancy and fault tolerance in RAID - 0.
+Example : For example if the data is 1, 2, 3, 4, 5 and 6 then ....
+       1 2
+       3 4
+       5 6
+       7 8
+Double the data to be consumed 
+	   
+Q.How to configure RAID - 1 in Linux?
+● To configure RAID - 1, minimum 2 disks are required and the partition id is "fd".
+● In this the same data will be written on 2 disks ie., exact copy on both the disks.
+● if one disk is failed we can recover the data from another disk.
+● So, there is a high availability, redundancy and fault tolerance in RAID - 1.
+● In this writing speed is slow compared to RAID - 0.
+Example : For example if the data is 1, 2, 3, 4, 5 and 6 then ....
+  1  1
+  2  2
+  3  3
+  4  4
+  5  5
+  6  6
+Same size will be consumed 
+  
+Q.How to configure RAID - 5 in Linux?
+● To configure RAID - 5, minimum 3 disks are required and the partition id is "fd".
+● In every disk approximately 25 - 30% of space is reserved for parity.
+● Reading and writing is very fast. So, it produces high performance.
+● This is used Stripping with parity concept.
+● if one disk is failed we can recover the data using remaining two disks and parity.
+● If two disks are failed, then we cannot recover the data.
+● So, there is no redundancy and fault tolerance in RAID - 5.
+Example : For example if the data is 1, 2, 3, 4, 5 and 6 then ....
+1     2    1+2
+3+4   3    4
+6     5+6  5
+data will be consumed as per the formula n-1 
+
+Q. I have four disks each 1TB in RAID - (1+0). So, total how much disk space can I utilize in that RAID - (1+0)?
+A. RAID - (1+0) means Mirroring + Stripping. It requires 4 disks, ie., 2 disks for mirroring and remaining 2 disks for 
+   stripping. And 5 - 10% disk space is used for superblock information. So, finally we can utilize 2TB - 2TB X 10% 
+   disk space in that RAID - (1+0).
+   
+Q. If two disks failed in RAID - (1+0), can we recover the data?
+A. The RAID - (1+0) requires minimum 4 disks and it uses Mirroring + Stripping. If one disk is failed we can recover 
+   the data, but if two disks are failed we cannot recover the data
+
+
+
+
+
+
+
+
+
+
+
+
+
+-
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

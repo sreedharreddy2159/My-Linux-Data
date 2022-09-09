@@ -1,0 +1,253 @@
+-----------------------------------------user & Admin-----------------------------------------------------
+# vi /etc/login.defs
+Importent file which contain all the definition related to user creation 
+like what will be the mail directory 
+     what will be the Password max days, min days 
+	 what should be the password minimum length 
+	 what should be the password worn age 
+	 what should be the min user id
+	 what should be the max UID
+	 what should be the min, max GID
+	 what should be the home dir and what shoul be the umask value 
+-----User admin--------
+To create a user 
+# useradd user1 or adduser user1
+To delete created user 
+# userdel -r user1 
+-r the home dir will be deleted 
+Configuration file 
+/etc/passwd
+# id <user name>
+# userdel <user name>
+To modify the created user 
+# usermod -u user2 user1 
+user arkitecture will have total  fields 7 
+# user:x:1002:1002:user,500,33,35,44:/home/sagar:bin/bash
+ 
+# vi /etc/passwd 
+#  Sreedhar:x:1000:1000:Vivek Gite:/home/vivek:/bin/bash
+it has 7 fields 	 
+1. Username: It is used when user logs in. It should be between 1 and 32 characters in length. 
+2. Password: An x character indicates that encrypted password is stored in /etc/shadow file. 
+   Please note that you need to use the passwd command to computes the hash of a password typed at 
+   the CLI or to store/update the hash of the password in /etc/shadow file
+3. User ID (UID): Each user must be assigned a user ID (UID). UID 0 (zero) is reserved for root and
+   UIDs 1-99 are reserved for other predefined accounts. Further UID 100-999 are reserved by system 
+   for administrative and system accounts/groups.
+4. Group ID (GID): The primary group ID (stored in /etc/group file)
+5. User ID Info (GECOS): The comment field. It allow you to add extra information about the users such 
+   as user’s full name, phone number etc. This field use by finger command.
+6. Home directory: The absolute path to the directory the user will be in when they log in. 
+   If this directory does not exists then users directory becomes /
+7. Command/shell: The absolute path of a command or shell (/bin/bash). Typically, this is a shell. 
+   Please note that it does not have to be a shell. For example, sysadmin can use the nologin shell, 
+   which acts as a replacement shell for the user accounts. If shell set to /sbin/nologin and the user 
+   tries to log in to the Linux system directly, the /sbin/nologin shell closes the connection.
+ 
+-----Group admin-------
+config file is /etc/group
+# groupadd CSE
+cofiguration file /etc/groupadd
+# usermod -G <group name> <user name>
+# usermod -a -G <group name> <user name>
+# gpasswd -d <user name> <group name>
+To modify the created user 
+# usermod -u user2 user1
+To modify the group name 
+# groupmod < new group name> <existing group name>  
+TO lock the user account
+# usermod -L user1
+To unlock the user account
+ usermod -U user1
+-u for modify user name 
+-c to configure a full name for user 
+-s to modify the login shell of user  (Ex. /usr/bin/ksh) fallowed by the user name 
+Example for User modification
+Ex. usermod -u user2 -G group1 -c "sreedhar Reddy" -s /user/bin/ksh user1  
+Example for group modification
+Ex. groupmod < new group name> <existing group name>
+
+# vi /etc/group
+Architecture and fields 
+vivek : vivek adm dialout cdrom plugdev lpadmin netdev admin sambashare libvirtd
+
+4 fields
+1. group_name: It is the name of group. If you run ls -l command, you will see this name printed in 
+   the group field.
+2. Password: Generally password is not used, hence it is empty/blank. It can store encrypted password. 
+   This is useful to implement privileged groups.
+3. Group ID (GID): Each user must be assigned a group ID. You can see this number in your /etc/passwd file.
+4. Group List: It is a list of user names of users who are members of the group. The user names, 
+   must be separated by commas.
+---------/etc/shadow-----------------------   
+Q. how to unlock and lock user andceck the .
+A. To Lock user    # usermod -L username
+   To Unlock user  # usermod -U username
+Configuration file 
+# /etc/shadow
+Aield and architecture
+Total 8 fields
+shadow file has total 8 fields for every user on machine
+
+1. Username : A valid account name, which exist on the system. 
+2. encripted Password hash
+3. Last password changed date
+4. Minimum Days
+5. Maximum Days
+6. Warn Days
+7. Inactive Days
+8. Expire date
+
+
+----------------------------------------------chage command--------------------------------------------
+Enforce Users To Change Passwords Frequently
+url: https://www.youtube.com/watch?v=zENZ3sPaLhI
+Configuration file
+#cat /etc/shadow(8 fields)
+1.Username 
+2nd field starts with $ indicates Password 
+or field starts with ! indicates that locked
+3 rd Last password change number of days the pw get expired
+4 rd fiels indicates The minimum number of days required between password changes
+5. fiels-> maximum number of days the password is valid, after that user is forced to change her password again.
+6. th Warn: The number of days before password is to expire that user is warned that his/her 
+  password must be changed 
+7. Inactive : The number of days after password expires that account is disabled.
+8. Expire : The date of expiration of the account, expressed as the number of days since Jan 1, 1970.
+
+syntax
+#chage -l <username>
+-d last day
+-E expirydate
+-I Inactive
+-l List
+-m minimum days
+-M Max days
+-W warn days
+Example:
+#chage m 0 M 90 -w 10 -I 15 -E "yyyy-MM-DD" <username>
+if the user wants to change the pw to prompt to the user once login
+#chage -d o username
+but check the execution with echo $?
+--------------------------------------------------------------------------------------------------------
+Q. how to unlock and lock user andceck the .
+A. To Lock user    # usermod -L username
+   To Unlock user  # usermod -U username
+Configuration file 
+# /etc/shadow
+Aield and architecture
+Total 9 fields
+shadow file has total 9 fields for every user on machine
+
+1. username
+2. Password hash
+3. Last password changed date
+4. Minimum Days
+5. Maximum Days
+6. Warn Days
+7. Inactive Days
+8. Expire date
+9. Reserved
+---------------------------------------------------------------------------------------------------------
+-----------------------------------------sudo privilege to user-------------------------------------------
+To get to know path of the command 
+# whereis useradd (useradd is the command )
+To give the sudo privilege to the user 
+# vi /etc/sudoers 
+---under come to user aliases under...
+user_Alias L1 = user1 
+
+--under and come to command aliases 
+Cmnd_Alias L1CMD = /use/sbin/useradd, /usr/sbin/usermod, /usr/sbin/userdel 
+ 
+--under root ALL=(ALL)   ALL
+L1(tab) rhelserver=(root)(tab) NOPASSWD: L1CMD 
+
+or 
+# vi /etc/sudoers 
+--under root ALL=(ALL)   ALL
+user(tab) ALL=(ALL)(tab) /use/sbin/useradd, /usr/sbin/usermod, /usr/sbin/userdel  
+-----------
+To give the sudo privilege to the group 
+--under % wheel ALL=(ALL)   ALL
+%group(tab) ALL=(ALL)(TAB) NOPASSWD: ALL  
+
+
+
+# passwed -i command will recover the /etc/passwd file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
